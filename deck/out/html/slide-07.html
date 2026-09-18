@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>07 — 07 — Mark · Sweep · Compact</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>07 — Mark · Sweep · Compact</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>07</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2">Mark. Sweep. <span class="grad">Compact.</span></div>
+<p class="lead mt10" style="font-size:24px">The classic 3-step model behind (almost) every collector — find the living, free the dead, tidy up.</p>
+<div class="row gap24 mt24" style="height:500px">
+  <div style="width:830px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">The cycle, every time</div><div style=""><div class="pstep on"><div class="n">1</div><div class="grow"><div class="h4"><span style="color:#FFD9A8">MARK</span> — find who is alive</div><div class="body mt6">Trace from <b>GC Roots</b> and tag every <b>reachable</b> object.</div></div></div><div style="height:14px"></div><div class="pstep"><div class="n">2</div><div class="grow"><div class="h4"><span style="color:#FFB0A8">SWEEP</span> — reclaim the rest</div><div class="body mt6">Free memory of <b>unreachable</b> objects. Nothing points to them.</div></div></div><div style="height:14px"></div><div class="pstep"><div class="n">3</div><div class="grow"><div class="h4"><span style="color:#BFE0FF">COMPACT</span> — defragment</div><div class="body mt6">Slide survivors together so free space is <b>one</b> clean block.</div></div></div></div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">What it looks like in memory</div><div style="">
+<div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#97A5BD;margin-bottom:10px">HEAP BEFORE · G = garbage</div>
+<div class="blocks"><div class="blk live">A</div><div class="blk live">B</div><div class="blk g">G</div><div class="blk live">C</div><div class="blk g">G</div><div class="blk live">D</div></div>
+<div class="row mid mt14" style="gap:12px">
+  <span class="mono" style="font-size:14px;color:#F89820">mark ✓</span>
+  <span style="color:#97A5BD">→</span>
+  <span class="mono" style="font-size:14px;color:#E8453C">sweep</span>
+  <span style="color:#97A5BD">→</span>
+  <span class="mono" style="font-size:14px;color:#5AB0E0">compact</span>
+</div>
+<div class="cap mt18" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#97A5BD;margin-bottom:10px">HEAP AFTER · survivors packed left, free space right</div>
+<div class="blocks"><div class="blk live">A</div><div class="blk live">B</div><div class="blk live">C</div><div class="blk live">D</div><div class="blk free"></div><div class="blk free"></div></div>
+<div class="note mt18" style="font-size:16px">Modern collectors are <b>more sophisticated</b> — but Mark-Sweep-Compact is the mental model everything builds on.</div>
+</div></div></div>
+</div>
+</div>
+</div>
+</body></html>

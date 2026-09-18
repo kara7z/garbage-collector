@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>03 — 03 — JVM memory overview</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>03 — JVM memory overview</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>03</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2">Where does Java keep <span class="grad">everything?</span></div>
+<p class="lead mt10" style="font-size:24px">Two areas — the <span class="hl-c">Stack</span> for execution, the <span class="hl-o">Heap</span> for objects. Only the Heap is garbage-collected.</p>
+<div class="row gap24 mt24" style="height:556px">
+  <div style="width:760px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">The 30-second model</div><div style="">
+<ul class="bul "><li><b>STACK</b> — one per thread, per method call.</li><li>Holds <b>locals</b>, parameters and <b>references</b> to objects.</li><li><b>HEAP</b> — shared memory for <b>objects</b> and <b>arrays</b>.</li><li>Only the <b>Heap</b> is managed by the <b>Garbage Collector</b>.</li></ul>
+<div class="note mt18" style="font-size:16.5px">
+  <b>Mental model:</b> Stack = <i>what you are doing now</i> &nbsp;·&nbsp; Heap = <i>what you created</i>.
+</div>
+</div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">JVM memory map</div><div style="padding-top:6px">
+<div class="col center" style="gap:0;width:100%;padding:6px 0 2px 0">
+  <div class="node root" style="font-size:22px;padding:15px 44px;letter-spacing:.06em"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 2.6l8.5 4.7v9.4L12 21.4 3.5 16.7V7.3z"/><path d="M3.7 7.4L12 12l8.3-4.6M12 12v9.3"/></svg><span>JVM MEMORY</span></div>
+  <div style="height:26px;display:flex;align-items:center;color:#97A5BD">
+    <svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <div class="row gap18" style="width:100%;justify-content:center">
+    <div class="card tight" style="width:330px;text-align:center;border-color:rgba(90,176,224,.5)">
+      <div class="cap" style="color:#5AB0E0;margin-bottom:8px">STACK</div>
+      <div style="display:flex;justify-content:center;margin-bottom:8px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2l9 4.6-9 4.6-9-4.6z"/><path d="M3 12.6l9 4.6 9-4.6"/><path d="M3 16.9l9 4.6 9-4.6"/></svg></div>
+      <div class="h4">Method calls</div>
+      <div class="body mt6" style="font-size:17px">locals · parameters · refs</div>
+      <div class="mono mt10" style="font-size:13.5px;color:#97A5BD">fast · per-thread · no GC</div>
+    </div>
+    <div class="card tight glow-o" style="width:330px;text-align:center;border-color:rgba(248,152,32,.6)">
+      <div class="cap" style="color:#F89820;margin-bottom:8px">HEAP</div>
+      <div style="display:flex;justify-content:center;margin-bottom:8px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M7 15.5v-4M11 15.5V8M15 15.5v-3M18.5 15.5V11"/></svg></div>
+      <div class="h4">Objects + arrays</div>
+      <div class="body mt6" style="font-size:17px">shared · garbage-collected</div>
+      <div class="mono mt10" style="font-size:13.5px;color:#F89820">GC lives here ↓</div>
+    </div>
+  </div>
+  <div style="height:24px;display:flex;align-items:center;color:#F89820">
+    <svg width="30" height="24" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <div class="node" style="border-color:rgba(123,196,107,.5);color:#C9E8C1;font-size:18px;padding:12px 28px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg><span>Garbage Collector sweeps the Heap</span></div>
+</div>
+</div></div></div>
+</div>
+</div>
+</div>
+</body></html>

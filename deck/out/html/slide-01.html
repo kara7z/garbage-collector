@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>01 — YouCode · Java Track · Classroom Session</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>YouCode · Java Track</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>01</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div style="position:absolute;left:-70px;top:520px;width:1080px;opacity:.15;transform:rotate(-1.6deg)">
+  <div class="editor mini" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Heap.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cst">public</span> <span class="t-cst">class</span> <span class="t-var">Heap</span> {</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow"><span class="ln">3</span><span class="src">    <span class="t-cst">void</span> <span class="t-mtd">demo</span>() {</span></div><div class="crow"><span class="ln">4</span><span class="src">        <span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>(<span class="t-str">&quot;Oussama&quot;</span>);   <span class="t-cmt">// 1 allocation on the heap</span></span></div><div class="crow"><span class="ln">5</span><span class="src">        <span class="t-var">user</span> = <span class="t-kw">null</span>;                       <span class="t-cmt">// the reference is dropped</span></span></div><div class="crow"><span class="ln">6</span><span class="src">        <span class="t-cls">System</span>.<span class="t-mtd">gc</span>();                       <span class="t-cmt">// a request, not a command</span></span></div><div class="crow"><span class="ln">7</span><span class="src">    }</span></div><div class="crow"><span class="ln">8</span><span class="src">}</span></div></div>
+</div>
+</div>
+
+<div class="row" style="position:relative">
+  <div class="col" style="width:1010px;padding-top:6px">
+    <div class="row mid gap14">
+      <span style="width:54px;height:4px;border-radius:2px;background:linear-gradient(90deg,#F89820,#E8453C)"></span>
+      <span style="font-size:19px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F89820">YouCode · Java Track</span>
+    </div>
+
+    <div class="h1 mt24">Java Memory<br><span class="grad">Management</span></div>
+
+    <div class="mt18" style="font-size:58px;font-weight:800;letter-spacing:.15em;color:#FFD9A8">
+      GARBAGE COLLECTOR
+    </div>
+
+    <p class="lead mt24" style="width:940px">
+      Understanding how Java manages memory automatically —
+      where objects live, how the Garbage Collector finds them,
+      and why it matters when you write real code.
+    </p>
+
+    <div class="row gap14 mt32" style="flex-wrap:wrap">
+      <span class="chip o"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.4 8.6h12.2v5.6a5.6 5.6 0 01-5.6 5.6H10a5.6 5.6 0 01-5.6-5.6z"/><path d="M16.6 9.9h1.4a2.6 2.6 0 010 5.2h-1.4"/><path d="M8.4 2.6v3M12 2.6v3"/></svg>Presenter · Kara Oussama</span>
+      <span class="chip c"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg>15 slides</span>
+      <span class="chip "><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.2"/></svg>15–25 min</span>
+      <span class="chip p"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13.4 2.5L5 13.6h5.3L8.9 21.5 18 10.2h-5.3z"/></svg>JDK 17+ · G1 is the default</span>
+    </div>
+  </div>
+
+  <div class="grow col" style="align-items:flex-end"><svg width="640" height="772" viewBox="0 0 640 772" xmlns="http://www.w3.org/2000/svg" ><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker><rect x="34" y="12" width="132" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#F89820" stroke-width="1.8"/><text x="100.0" y="35.0" fill="#F89820" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">GC ROOT</text><line x1="168" y1="35" x2="202" y2="35" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><rect x="205" y="12" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#5AB0E0" stroke-width="1.8"/><text x="265.0" y="35.0" fill="#5AB0E0" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object A</text><line x1="327" y1="35" x2="361" y2="35" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><rect x="364" y="12" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#5AB0E0" stroke-width="1.8"/><text x="424.0" y="35.0" fill="#5AB0E0" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object B</text><rect x="205" y="78" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#E8453C" stroke-width="1.8" stroke-dasharray="6 5"/><text x="265.0" y="101.0" fill="#E8453C" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object C</text><text x="336" y="105" fill="#E8453C" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">no path from a root</text><text x="336" y="122" fill="#E8453C" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">→ unreachable</text><text x="34" y="140" fill="#60708A" font-size="12.5" font-weight="400" letter-spacing="2" font-family="Inter, sans-serif" text-anchor="start">HEAP</text><rect x="34" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="123" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="212" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="301" y="152" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="190.0" r="7" fill="#FF7A6E"/><rect x="34" y="241" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="279.0" r="7" fill="#4E8FC0"/><rect x="123" y="241" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="161.0" cy="279.0" r="7" fill="#FF7A6E"/><rect x="212" y="241" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="250.0" cy="279.0" r="7" fill="#FF7A6E"/><rect x="301" y="241" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="279.0" r="7" fill="#4E8FC0"/><rect x="34" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="123" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="212" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="301" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="34" y="419" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="72.0" cy="457.0" r="7" fill="#FF7A6E"/><rect x="123" y="419" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="457.0" r="7" fill="#4E8FC0"/><rect x="212" y="419" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="457.0" r="7" fill="#4E8FC0"/><rect x="301" y="419" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="457.0" r="7" fill="#FF7A6E"/><rect x="34" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="123" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="212" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="301" y="508" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="546.0" r="7" fill="#FF7A6E"/><rect x="34" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="123" y="597" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="161.0" cy="635.0" r="7" fill="#FF7A6E"/><rect x="212" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="301" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="412" y="174" width="24" height="24" rx="7" fill="#5AB0E0" fill-opacity=".22" stroke="#5AB0E0" stroke-width="1.6"/><text x="448" y="188" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">live object</text><text x="448" y="207" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">reachable from a root</text><rect x="412" y="252" width="24" height="24" rx="7" fill="#E8453C" fill-opacity=".22" stroke="#E8453C" stroke-width="1.6"/><text x="448" y="266" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">garbage</text><text x="448" y="285" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">unreachable → eligible</text><rect x="412" y="330" width="24" height="24" rx="7" fill="#60708A" fill-opacity=".22" stroke="#60708A" stroke-width="1.6"/><text x="448" y="344" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">reclaimed</text><text x="448" y="363" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">memory available again</text><path d="M416 414 C 472 452, 508 384, 426 366" fill="none" stroke="#F89820" stroke-width="2.2" stroke-dasharray="8 7" marker-end="url(#ah-F89820)"/><g transform="translate(458,398)"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg></g><text x="412" y="500" fill="#F89820" font-size="15" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">Mark · Sweep</text><text x="412" y="522" fill="#F89820" font-size="15" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">Compact</text><text x="34" y="750" fill="#60708A" font-size="14" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">a heap is memory the JVM manages for you</text></svg></div>
+</div>
+</div>
+</div>
+</body></html>

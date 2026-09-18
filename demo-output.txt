@@ -1,0 +1,25 @@
+GCDemo started — watch GC with -Xlog:gc* and VisualVM
+[GC (Allocation Failure)  16384K->472K(62976K), 0.0017461 secs]
+[GC (Allocation Failure)  16856K->576K(79360K), 0.0031168 secs]
+Iteration 1 done. Kept: 500
+[GC (Allocation Failure)  33344K->968K(79360K), 0.0032401 secs]
+[GC (Allocation Failure)  33736K->1248K(112128K), 0.0043006 secs]
+Iteration 2 done. Kept: 1000
+[GC (Allocation Failure)  66784K->1472K(112128K), 0.0031062 secs]
+Iteration 3 done. Kept: 1500
+[GC (Allocation Failure)  67008K->2088K(127488K), 0.0037051 secs]
+Iteration 4 done. Kept: 2000
+Iteration 5 done. Kept: 2500
+[GC (Allocation Failure)  83496K->3112K(128000K), 0.0026997 secs]
+Iteration 6 done. Kept: 3000
+[GC (Allocation Failure)  84520K->3800K(126976K), 0.0019813 secs]
+Iteration 7 done. Kept: 3500
+Iteration 8 done. Kept: 4000
+[GC (Allocation Failure)  83672K->5064K(126976K), 0.0036169 secs]
+Iteration 9 done. Kept: 4500
+[GC (Allocation Failure)  84936K->5696K(126976K), 0.0030301 secs]
+Iteration 10 done. Kept: 5000
+Iteration 11 done. Kept: 5500
+[GC (Allocation Failure)  84544K->6928K(124416K), 0.0041418 secs]
+Iteration 12 done. Kept: 6000
+Done. Total kept objects: 6000

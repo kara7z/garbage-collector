@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>05 — 05 — What is garbage?</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>05 — What is garbage?</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>05</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2">Garbage = <span class="grad">unreachable.</span></div>
+<p class="lead mt10" style="font-size:24px">Nobody can reach the object any more — so it becomes <span class="hl-o">eligible</span> for collection.</p>
+<div class="row gap24 mt24" style="height:486px">
+  <div style="width:600px" class="col gap18">
+    <div class="editor big" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>GarbageDemo.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>();</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow hl"><span class="ln">3</span><span class="src"><span class="t-var">user</span> = <span class="t-kw">null</span>;  <span class="t-cmt">// reference dropped</span></span></div></div>
+</div>
+    <div class="ok" style="font-size:19px;text-align:center"><b>An unreachable object becomes eligible for GC.</b></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">Drop the last reference → the object floats away</div><div style="padding-top:4px">
+<div class="row" style="gap:0;align-items:stretch;justify-content:center;padding:8px 0 2px 0">
+  <div style="flex:1;text-align:center">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#7BC46B;margin-bottom:10px">BEFORE · reachable</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+      <span class="mono" style="font-size:19px;background:rgba(90,176,224,.12);border:1px solid rgba(90,176,224,.45);border-radius:10px;padding:10px 18px;color:#BFE0FF">user</span>
+      <svg width="70" height="26" viewBox="0 0 54 26" fill="none" stroke="#7BC46B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+      <span class="mono" style="font-size:18px;background:rgba(123,196,107,.14);border:1px solid rgba(123,196,107,.5);border-radius:10px;padding:10px 18px;color:#C9E8C1">User object</span>
+    </div>
+    <div class="mono mt10" style="font-size:14px;color:#7BC46B">✓ GC keeps it — someone can reach it</div>
+  </div>
+  <div style="width:70px;display:flex;align-items:center;justify-content:center;color:#97A5BD">
+    <svg width="30" height="40" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+  </div>
+  <div style="flex:1;text-align:center">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#E8453C;margin-bottom:10px">AFTER · unreachable</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+      <span class="mono" style="font-size:19px;background:rgba(83,130,161,.08);border:1px solid #2C3E5C;border-radius:10px;padding:10px 18px;color:#97A5BD">user = null</span>
+      <span class="mono" style="font-size:15px;color:#97A5BD">✕</span>
+      <span class="mono" style="font-size:18px;background:rgba(232,69,60,.1);border:1px dashed rgba(232,69,60,.6);border-radius:10px;padding:10px 18px;color:#FFB0A8">User object</span>
+    </div>
+    <div class="mono mt10" style="font-size:14px;color:#E8453C">garbage → eligible, not yet deleted</div>
+  </div>
+</div>
+<div class="mt14" style="display:flex;justify-content:center">
+  <span style="display:inline-flex;align-items:center;gap:10px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.45);border-radius:999px;padding:8px 20px;font-size:16px;color:#FFC0B9"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg><span><b>Eligible</b> ≠ deleted — the GC still has to run.</span></span>
+</div>
+</div></div></div>
+</div>
+<div class="warn mt18" style="font-size:17px">Setting <code>user = null</code> does <b>NOT</b> delete the object — it only cuts the last rope. The collector frees it later.</div>
+</div>
+</div>
+</body></html>

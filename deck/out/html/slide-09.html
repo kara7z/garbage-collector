@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>09 — 09 — Collector zoo</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>09 — Collector zoo</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>09</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2">Pick your <span class="grad">collector.</span></div>
+<p class="lead mt10" style="font-size:24px">Same job — find garbage. Different trade-offs between <span class="hl-o">throughput</span> and <span class="hl-c">pause time</span>.</p>
+<div class="row gap18 mt24" style="height:470px">
+  <div class="grow"><div class="card " style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#97A5BD22;border:1px solid #97A5BD66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#97A5BD" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12h8"/></svg></span><div class="h4">Serial GC</div></div><ul class="bul sm"><li>Simple · <b>single-threaded</b></li><li>Small apps · tiny heaps</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-o" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#F8982022;border:1px solid #F8982066;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="6.5" width="11" height="11" rx="2.5"/><rect x="10.5" y="2.5" width="11" height="11" rx="2.5"/></svg></span><div class="h4">Parallel GC</div></div><ul class="bul sm"><li><b>Multi-threaded</b> stop-the-world</li><li>Max <b>throughput</b> batch jobs</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-g" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#7BC46B22;border:1px solid #7BC46B66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg></span><div class="h4">G1 GC ★</div></div><ul class="bul sm"><li><b>Region-based</b>, default JDK 9+</li><li>Balances latency + throughput</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-c" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#5AB0E022;border:1px solid #5AB0E066;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13.4 2.5L5 13.6h5.3L8.9 21.5 18 10.2h-5.3z"/></svg></span><div class="h4">ZGC</div></div><ul class="bul sm"><li><b>Sub-millisecond</b> pauses</li><li>Huge heaps · concurrent</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-p" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#A78BFA22;border:1px solid #A78BFA66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.5 19.5C4.5 11 10 5 20 5c0 10-5.6 15-15.5 14.5z"/><path d="M9 15c1.7-3 4-5 7.5-6.4"/></svg></span><div class="h4">Shenandoah</div></div><ul class="bul sm"><li><b>Low-pause</b>, concurrent</li><li>Responsive services</li></ul></div></div></div>
+</div>
+<div class="note mt18" style="font-size:17px;text-align:center">Rule of thumb: default to <b>G1</b> — reach for <b>ZGC / Shenandoah</b> only when pauses hurt. ★ = the one we zoom into next.</div>
+</div>
+</div>
+</body></html>

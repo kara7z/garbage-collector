@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>15 — 15 — Key takeaways</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>15 — Key takeaways</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>15</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2 txtc">Key <span class="grad">takeaways.</span></div>
+<p class="lead mt10 txtc" style="font-size:24px">Nine cards — if you remember these, you understand Java memory.</p>
+<div class="col gap14 mt24">
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#5AB0E055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2l9 4.6-9 4.6-9-4.6z"/><path d="M3 12.6l9 4.6 9-4.6"/><path d="M3 16.9l9 4.6 9-4.6"/></svg><div class="h4" style="font-size:19px">Memory</div></div><div class="body" style="font-size:16.5px">Stack = calls · <b>Heap</b> = objects</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#F8982055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 2.6l8.5 4.7v9.4L12 21.4 3.5 16.7V7.3z"/><path d="M3.7 7.4L12 12l8.3-4.6M12 12v9.3"/></svg><div class="h4" style="font-size:19px">Objects</div></div><div class="body" style="font-size:16.5px">Allocated on the <b>Heap</b> via <b>new</b></div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#A78BFA55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="12" r="2.8"/><path d="M8.8 12h6.4"/></svg><div class="h4" style="font-size:19px">Reachability</div></div><div class="body" style="font-size:16.5px"><b>GC Roots →</b> reachable = kept</div></div></div>
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#E8453C55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg><div class="h4" style="font-size:19px">Garbage</div></div><div class="body" style="font-size:16.5px"><b>Unreachable</b> = eligible, not deleted</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#7BC46B55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg><div class="h4" style="font-size:19px">Collector</div></div><div class="body" style="font-size:16.5px"><b>Mark · Sweep · Compact</b> the Heap</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#5AB0E055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M7 15.5v-4M11 15.5V8M15 15.5v-3M18.5 15.5V11"/></svg><div class="h4" style="font-size:19px">Generations</div></div><div class="body" style="font-size:16.5px"><b>Young</b> (Eden+S) → <b>Old</b> via promotion</div></div></div>
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#7BC46B55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg><div class="h4" style="font-size:19px">Collectors</div></div><div class="body" style="font-size:16.5px">Serial · Parallel · <b>G1 ★</b> · ZGC · Shenandoah</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#F8982055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4" width="19" height="16" rx="3"/><path d="M6.6 9.2l3 2.8-3 2.8M12.4 14.8h5"/></svg><div class="h4" style="font-size:19px">System.gc()</div></div><div class="body" style="font-size:16.5px">A <b>hint</b> — never a guarantee</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#E8453C55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg><div class="h4" style="font-size:19px">Leaks</div></div><div class="body" style="font-size:16.5px"><b>Retained refs</b> pin memory → OOM</div></div></div>
+</div>
+<div class="note mt18 txtc" style="font-size:19px"><b>Understanding memory helps Java developers write more efficient and reliable applications.</b></div>
+<div class="mt14 txtc" style="font-size:64px;font-weight:800;letter-spacing:-.02em">Questions<span style="color:#F89820">?</span></div>
+</div>
+</div>
+</body></html>

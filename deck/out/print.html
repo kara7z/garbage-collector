@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Java Memory Management — GC</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  @page { size: 13.3333in 7.5in; margin: 0; }
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { page-break-after: always; break-after: page; margin:0; }
+  .slide:last-child { page-break-after: auto; }
+</style>
+</head><body>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>YouCode · Java Track</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>01</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div style="position:absolute;left:-70px;top:520px;width:1080px;opacity:.15;transform:rotate(-1.6deg)">
+  <div class="editor mini" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Heap.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cst">public</span> <span class="t-cst">class</span> <span class="t-var">Heap</span> {</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow"><span class="ln">3</span><span class="src">    <span class="t-cst">void</span> <span class="t-mtd">demo</span>() {</span></div><div class="crow"><span class="ln">4</span><span class="src">        <span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>(<span class="t-str">&quot;Oussama&quot;</span>);   <span class="t-cmt">// 1 allocation on the heap</span></span></div><div class="crow"><span class="ln">5</span><span class="src">        <span class="t-var">user</span> = <span class="t-kw">null</span>;                       <span class="t-cmt">// the reference is dropped</span></span></div><div class="crow"><span class="ln">6</span><span class="src">        <span class="t-cls">System</span>.<span class="t-mtd">gc</span>();                       <span class="t-cmt">// a request, not a command</span></span></div><div class="crow"><span class="ln">7</span><span class="src">    }</span></div><div class="crow"><span class="ln">8</span><span class="src">}</span></div></div>
+</div>
+</div>
+
+<div class="row" style="position:relative">
+  <div class="col" style="width:1010px;padding-top:6px">
+    <div class="row mid gap14">
+      <span style="width:54px;height:4px;border-radius:2px;background:linear-gradient(90deg,#F89820,#E8453C)"></span>
+      <span style="font-size:19px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F89820">YouCode · Java Track</span>
+    </div>
+
+    <div class="h1 mt24">Java Memory<br><span class="grad">Management</span></div>
+
+    <div class="mt18" style="font-size:58px;font-weight:800;letter-spacing:.15em;color:#FFD9A8">
+      GARBAGE COLLECTOR
+    </div>
+
+    <p class="lead mt24" style="width:940px">
+      Understanding how Java manages memory automatically —
+      where objects live, how the Garbage Collector finds them,
+      and why it matters when you write real code.
+    </p>
+
+    <div class="row gap14 mt32" style="flex-wrap:wrap">
+      <span class="chip o"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.4 8.6h12.2v5.6a5.6 5.6 0 01-5.6 5.6H10a5.6 5.6 0 01-5.6-5.6z"/><path d="M16.6 9.9h1.4a2.6 2.6 0 010 5.2h-1.4"/><path d="M8.4 2.6v3M12 2.6v3"/></svg>Presenter · Kara Oussama</span>
+      <span class="chip c"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg>15 slides</span>
+      <span class="chip "><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.2"/></svg>15–25 min</span>
+      <span class="chip p"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13.4 2.5L5 13.6h5.3L8.9 21.5 18 10.2h-5.3z"/></svg>JDK 17+ · G1 is the default</span>
+    </div>
+  </div>
+
+  <div class="grow col" style="align-items:flex-end"><svg width="640" height="772" viewBox="0 0 640 772" xmlns="http://www.w3.org/2000/svg" ><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker><rect x="34" y="12" width="132" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#F89820" stroke-width="1.8"/><text x="100.0" y="35.0" fill="#F89820" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">GC ROOT</text><line x1="168" y1="35" x2="202" y2="35" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><rect x="205" y="12" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#5AB0E0" stroke-width="1.8"/><text x="265.0" y="35.0" fill="#5AB0E0" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object A</text><line x1="327" y1="35" x2="361" y2="35" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><rect x="364" y="12" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#5AB0E0" stroke-width="1.8"/><text x="424.0" y="35.0" fill="#5AB0E0" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object B</text><rect x="205" y="78" width="120" height="46" rx="11" fill="rgba(20,28,48,.95)" stroke="#E8453C" stroke-width="1.8" stroke-dasharray="6 5"/><text x="265.0" y="101.0" fill="#E8453C" font-size="14" font-weight="700" font-family="FiraCode, monospace" text-anchor="middle">Object C</text><text x="336" y="105" fill="#E8453C" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">no path from a root</text><text x="336" y="122" fill="#E8453C" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">→ unreachable</text><text x="34" y="140" fill="#60708A" font-size="12.5" font-weight="400" letter-spacing="2" font-family="Inter, sans-serif" text-anchor="start">HEAP</text><rect x="34" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="123" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="212" y="152" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="190.0" r="7" fill="#4E8FC0"/><rect x="301" y="152" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="190.0" r="7" fill="#FF7A6E"/><rect x="34" y="241" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="279.0" r="7" fill="#4E8FC0"/><rect x="123" y="241" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="161.0" cy="279.0" r="7" fill="#FF7A6E"/><rect x="212" y="241" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="250.0" cy="279.0" r="7" fill="#FF7A6E"/><rect x="301" y="241" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="279.0" r="7" fill="#4E8FC0"/><rect x="34" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="123" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="212" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="301" y="330" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="368.0" r="7" fill="#4E8FC0"/><rect x="34" y="419" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="72.0" cy="457.0" r="7" fill="#FF7A6E"/><rect x="123" y="419" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="457.0" r="7" fill="#4E8FC0"/><rect x="212" y="419" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="457.0" r="7" fill="#4E8FC0"/><rect x="301" y="419" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="457.0" r="7" fill="#FF7A6E"/><rect x="34" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="123" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="161.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="212" y="508" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="546.0" r="7" fill="#4E8FC0"/><rect x="301" y="508" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="339.0" cy="546.0" r="7" fill="#FF7A6E"/><rect x="34" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="72.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="123" y="597" width="76" height="76" rx="13" fill="rgba(232,69,60,.20)" stroke="#E8453C" stroke-width="1.6"/><circle cx="161.0" cy="635.0" r="7" fill="#FF7A6E"/><rect x="212" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="250.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="301" y="597" width="76" height="76" rx="13" fill="#16233A" stroke="#2E4A6B" stroke-width="1.6"/><circle cx="339.0" cy="635.0" r="7" fill="#4E8FC0"/><rect x="412" y="174" width="24" height="24" rx="7" fill="#5AB0E0" fill-opacity=".22" stroke="#5AB0E0" stroke-width="1.6"/><text x="448" y="188" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">live object</text><text x="448" y="207" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">reachable from a root</text><rect x="412" y="252" width="24" height="24" rx="7" fill="#E8453C" fill-opacity=".22" stroke="#E8453C" stroke-width="1.6"/><text x="448" y="266" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">garbage</text><text x="448" y="285" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">unreachable → eligible</text><rect x="412" y="330" width="24" height="24" rx="7" fill="#60708A" fill-opacity=".22" stroke="#60708A" stroke-width="1.6"/><text x="448" y="344" fill="#EAEFF8" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">reclaimed</text><text x="448" y="363" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">memory available again</text><path d="M416 414 C 472 452, 508 384, 426 366" fill="none" stroke="#F89820" stroke-width="2.2" stroke-dasharray="8 7" marker-end="url(#ah-F89820)"/><g transform="translate(458,398)"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg></g><text x="412" y="500" fill="#F89820" font-size="15" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">Mark · Sweep</text><text x="412" y="522" fill="#F89820" font-size="15" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">Compact</text><text x="34" y="750" fill="#60708A" font-size="14" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">a heap is memory the JVM manages for you</text></svg></div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>02 — The problem</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>02</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="row gap24" style="height:372px">
+  <div style="width:960px">
+    <div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">Why it matters at all</div><div style="">
+<ul class="bul "><li>Programs need memory to hold their <b>data</b> and their <b>objects</b>.</li><li>Every <code>new</code> allocates memory that must eventually be <b>released</b>.</li><li>In <b>C / C++</b> you call <code>free()</code> yourself — forget it and you leak or crash.</li><li><b>Java</b> does it for you: the Garbage Collector reclaims memory automatically.</li></ul>
+<div class="note mt18" style="font-size:16.5px">
+  <b>You never call free() in Java</b> — but memory is still finite, so something has to clean up.
+</div>
+</div></div>
+  </div>
+  <div class="grow">
+    <div class="card " style=""><div class="cap">Objects are memory</div><div style="padding-top:4px"><div style="display:flex;justify-content:center"><svg width="700" height="300" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" ><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker><defs><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker></defs><rect x="26" y="26" width="270" height="42" rx="10" fill="rgba(83,130,161,.10)" stroke="#2C3E5C" stroke-width="1.5"/><text x="40" y="52" fill="#60708A" font-size="12.5" font-weight="400" letter-spacing="2" font-family="Inter, sans-serif" text-anchor="start">HEAP</text><rect x="86" y="36" width="24" height="22" rx="6" fill="#7BC46B" fill-opacity=".45"/><rect x="120" y="36" width="24" height="22" rx="6" fill="#7BC46B" fill-opacity=".45"/><rect x="154" y="36" width="24" height="22" rx="6" fill="#7BC46B" fill-opacity=".45"/><rect x="188" y="36" width="24" height="22" rx="6" fill="#E8453C" fill-opacity=".45"/><rect x="222" y="36" width="24" height="22" rx="6" fill="#E8453C" fill-opacity=".45"/><rect x="256" y="36" width="24" height="22" rx="6" fill="#E8453C" fill-opacity=".45"/><rect x="130" y="92" width="24" height="24" rx="6" fill="#E8453C" fill-opacity=".4" stroke="#E8453C" stroke-width="1.4"/><rect x="164" y="118" width="24" height="24" rx="6" fill="#E8453C" fill-opacity=".4" stroke="#E8453C" stroke-width="1.4"/><rect x="106" y="132" width="24" height="24" rx="6" fill="#E8453C" fill-opacity=".4" stroke="#E8453C" stroke-width="1.4"/><path d="M142 84 C 150 110, 150 120, 146 132" fill="none" stroke="#E8453C" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ah-E8453C)"/><g transform="translate(112,150)"><svg width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg></g><text x="112" y="268" fill="#F89820" font-size="15" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">Garbage Collector</text><text x="112" y="288" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">reclaims unreachable objects</text><path d="M216 232 C 300 236, 330 160, 336 96" fill="none" stroke="#7BC46B" stroke-width="2" marker-end="url(#ah-7BC46B)"/><text x="352" y="120" fill="#7BC46B" font-size="14" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">memory</text><text x="352" y="140" fill="#7BC46B" font-size="14" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">available</text><text x="352" y="160" fill="#7BC46B" font-size="14" font-weight="400" font-family="FiraCode, monospace" text-anchor="start">again</text><text x="26" y="290" fill="#60708A" font-size="13" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">unreachable objects are not deleted at the moment you drop the reference —</text><text x="26" y="312" fill="#60708A" font-size="13" font-weight="400" font-family="Inter, sans-serif" text-anchor="start"></text></svg></div></div></div>
+  </div>
+</div>
+
+<div class="mt24"><div class="flow"><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12h8"/></svg></div><div class="t">Create object</div><div class="s"><span class="mono">new User()</span></div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M1.8 12S5.4 5.8 12 5.8 22.2 12 22.2 12 18.6 18.2 12 18.2 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.1"/></svg></div><div class="t">Use object</div><div class="s">the program reads and writes it</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M6.2 6.2l11.6 11.6M17.8 6.2L6.2 17.8"/></svg></div><div class="t">Becomes unreachable</div><div class="s">no live reference points to it</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step hot" style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg></div><div class="t">Garbage Collector</div><div class="s">finds what nobody can reach</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step cool" style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.5 12.6l4.8 4.8L19.5 6.6"/></svg></div><div class="t">Memory reclaimed</div><div class="s">the space can be reused</div></div></div></div>
+
+<div class="mt24" style="width:1180px">
+  <div class="joke "><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“You create the objects. Java cleans the mess.”</span></div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>03 — JVM memory overview</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>03</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Where does Java keep <span class="grad">everything?</span></div>
+<p class="lead mt10" style="font-size:24px">Two areas — the <span class="hl-c">Stack</span> for execution, the <span class="hl-o">Heap</span> for objects. Only the Heap is garbage-collected.</p>
+<div class="row gap24 mt24" style="height:556px">
+  <div style="width:760px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">The 30-second model</div><div style="">
+<ul class="bul "><li><b>STACK</b> — one per thread, per method call.</li><li>Holds <b>locals</b>, parameters and <b>references</b> to objects.</li><li><b>HEAP</b> — shared memory for <b>objects</b> and <b>arrays</b>.</li><li>Only the <b>Heap</b> is managed by the <b>Garbage Collector</b>.</li></ul>
+<div class="note mt18" style="font-size:16.5px">
+  <b>Mental model:</b> Stack = <i>what you are doing now</i> &nbsp;·&nbsp; Heap = <i>what you created</i>.
+</div>
+</div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">JVM memory map</div><div style="padding-top:6px">
+<div class="col center" style="gap:0;width:100%;padding:6px 0 2px 0">
+  <div class="node root" style="font-size:22px;padding:15px 44px;letter-spacing:.06em"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 2.6l8.5 4.7v9.4L12 21.4 3.5 16.7V7.3z"/><path d="M3.7 7.4L12 12l8.3-4.6M12 12v9.3"/></svg><span>JVM MEMORY</span></div>
+  <div style="height:26px;display:flex;align-items:center;color:#97A5BD">
+    <svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <div class="row gap18" style="width:100%;justify-content:center">
+    <div class="card tight" style="width:330px;text-align:center;border-color:rgba(90,176,224,.5)">
+      <div class="cap" style="color:#5AB0E0;margin-bottom:8px">STACK</div>
+      <div style="display:flex;justify-content:center;margin-bottom:8px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2l9 4.6-9 4.6-9-4.6z"/><path d="M3 12.6l9 4.6 9-4.6"/><path d="M3 16.9l9 4.6 9-4.6"/></svg></div>
+      <div class="h4">Method calls</div>
+      <div class="body mt6" style="font-size:17px">locals · parameters · refs</div>
+      <div class="mono mt10" style="font-size:13.5px;color:#97A5BD">fast · per-thread · no GC</div>
+    </div>
+    <div class="card tight glow-o" style="width:330px;text-align:center;border-color:rgba(248,152,32,.6)">
+      <div class="cap" style="color:#F89820;margin-bottom:8px">HEAP</div>
+      <div style="display:flex;justify-content:center;margin-bottom:8px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M7 15.5v-4M11 15.5V8M15 15.5v-3M18.5 15.5V11"/></svg></div>
+      <div class="h4">Objects + arrays</div>
+      <div class="body mt6" style="font-size:17px">shared · garbage-collected</div>
+      <div class="mono mt10" style="font-size:13.5px;color:#F89820">GC lives here ↓</div>
+    </div>
+  </div>
+  <div style="height:24px;display:flex;align-items:center;color:#F89820">
+    <svg width="30" height="24" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <div class="node" style="border-color:rgba(123,196,107,.5);color:#C9E8C1;font-size:18px;padding:12px 28px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg><span>Garbage Collector sweeps the Heap</span></div>
+</div>
+</div></div></div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>04 — Stack vs Heap</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>04</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Stack is for execution. <span class="grad">Heap is for objects.</span></div>
+<p class="lead mt10" style="font-size:24px">Variables live on the Stack. Objects live on the Heap — linked by <span class="hl-o">references</span>.</p>
+<div class="row gap24 mt24" style="height:470px">
+  <div style="width:640px" class="col gap18">
+    <div class="editor big" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>StackHeap.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow hl"><span class="ln">1</span><span class="src"><span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>();</span></div><div class="crow"><span class="ln">2</span><span class="src"><span class="t-cst">int</span> <span class="t-var">age</span> = <span class="t-num">20</span>;</span></div></div>
+</div>
+    <div class="card " style=""><div class="cap">Read the two lines</div><div style="padding-top:2px"><ul class="bul c sm"><li><code>age</code> holds a <b>value</b> directly.</li><li><code>user</code> holds a <b>reference</b> to a heap object.</li></ul></div></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">One arrow explains half of Java memory</div><div style="padding-top:4px">
+<div class="row mid" style="gap:0;justify-content:center;padding:10px 0 4px 0">
+  <div style="width:300px">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#5AB0E0;margin-bottom:10px">STACK · locals + refs</div>
+    <div class="card tight" style="border-color:rgba(90,176,224,.5);padding:16px 18px">
+      <div class="mono" style="font-size:19px;color:#BFE0FF;background:rgba(90,176,224,.1);border:1px solid rgba(90,176,224,.35);border-radius:10px;padding:12px 16px">age&nbsp;&nbsp;= <span style="color:#B5CEA8">20</span></div>
+      <div class="mono mt10" style="font-size:19px;color:#BFE0FF;background:rgba(248,152,32,.1);border:1px solid rgba(248,152,32,.45);border-radius:10px;padding:12px 16px">user&nbsp;&nbsp;●──┐</div>
+      <div class="small mt10">each frame disappears on <code>return</code></div>
+    </div>
+  </div>
+  <div style="width:120px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#F89820">
+    <span class="mono" style="font-size:14px;color:#F89820">reference</span>
+    <svg width="110" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+    <span class="mono" style="font-size:13px;color:#97A5BD">not a copy</span>
+  </div>
+  <div style="width:340px">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#F89820;margin-bottom:10px">HEAP · objects live here</div>
+    <div class="card tight glow-o" style="border-color:rgba(248,152,32,.6);padding:22px 18px;text-align:center">
+      <div style="display:flex;justify-content:center;margin-bottom:10px"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 2.6l8.5 4.7v9.4L12 21.4 3.5 16.7V7.3z"/><path d="M3.7 7.4L12 12l8.3-4.6M12 12v9.3"/></svg></div>
+      <div class="mono" style="font-size:20px;color:#FFD9A8">User object</div>
+      <div class="mono mt6" style="font-size:14px;color:#97A5BD">name · age · …</div>
+      <div class="mono mt10" style="font-size:13px;color:#7BC46B">✓ reachable → GC keeps it</div>
+    </div>
+  </div>
+</div>
+<div class="row gap14 mt14">
+  <div class="chip o"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2l9 4.6-9 4.6-9-4.6z"/><path d="M3 12.6l9 4.6 9-4.6"/><path d="M3 16.9l9 4.6 9-4.6"/></svg><span>Stack · fast · per-call</span></div>
+  <div class="chip c"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M7 15.5v-4M11 15.5V8M15 15.5v-3M18.5 15.5V11"/></svg><span>Heap · shared · GC-managed</span></div>
+</div>
+</div></div></div>
+</div>
+<div class="mt18" style="width:1240px"><div class="joke blue"><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“The stack remembers what you're doing. The heap stores what you created.”</span></div></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>05 — What is garbage?</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>05</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Garbage = <span class="grad">unreachable.</span></div>
+<p class="lead mt10" style="font-size:24px">Nobody can reach the object any more — so it becomes <span class="hl-o">eligible</span> for collection.</p>
+<div class="row gap24 mt24" style="height:486px">
+  <div style="width:600px" class="col gap18">
+    <div class="editor big" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>GarbageDemo.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>();</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow hl"><span class="ln">3</span><span class="src"><span class="t-var">user</span> = <span class="t-kw">null</span>;  <span class="t-cmt">// reference dropped</span></span></div></div>
+</div>
+    <div class="ok" style="font-size:19px;text-align:center"><b>An unreachable object becomes eligible for GC.</b></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">Drop the last reference → the object floats away</div><div style="padding-top:4px">
+<div class="row" style="gap:0;align-items:stretch;justify-content:center;padding:8px 0 2px 0">
+  <div style="flex:1;text-align:center">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#7BC46B;margin-bottom:10px">BEFORE · reachable</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+      <span class="mono" style="font-size:19px;background:rgba(90,176,224,.12);border:1px solid rgba(90,176,224,.45);border-radius:10px;padding:10px 18px;color:#BFE0FF">user</span>
+      <svg width="70" height="26" viewBox="0 0 54 26" fill="none" stroke="#7BC46B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+      <span class="mono" style="font-size:18px;background:rgba(123,196,107,.14);border:1px solid rgba(123,196,107,.5);border-radius:10px;padding:10px 18px;color:#C9E8C1">User object</span>
+    </div>
+    <div class="mono mt10" style="font-size:14px;color:#7BC46B">✓ GC keeps it — someone can reach it</div>
+  </div>
+  <div style="width:70px;display:flex;align-items:center;justify-content:center;color:#97A5BD">
+    <svg width="30" height="40" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+  </div>
+  <div style="flex:1;text-align:center">
+    <div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#E8453C;margin-bottom:10px">AFTER · unreachable</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+      <span class="mono" style="font-size:19px;background:rgba(83,130,161,.08);border:1px solid #2C3E5C;border-radius:10px;padding:10px 18px;color:#97A5BD">user = null</span>
+      <span class="mono" style="font-size:15px;color:#97A5BD">✕</span>
+      <span class="mono" style="font-size:18px;background:rgba(232,69,60,.1);border:1px dashed rgba(232,69,60,.6);border-radius:10px;padding:10px 18px;color:#FFB0A8">User object</span>
+    </div>
+    <div class="mono mt10" style="font-size:14px;color:#E8453C">garbage → eligible, not yet deleted</div>
+  </div>
+</div>
+<div class="mt14" style="display:flex;justify-content:center">
+  <span style="display:inline-flex;align-items:center;gap:10px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.45);border-radius:999px;padding:8px 20px;font-size:16px;color:#FFC0B9"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg><span><b>Eligible</b> ≠ deleted — the GC still has to run.</span></span>
+</div>
+</div></div></div>
+</div>
+<div class="warn mt18" style="font-size:17px">Setting <code>user = null</code> does <b>NOT</b> delete the object — it only cuts the last rope. The collector frees it later.</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>06 — Reachability & GC Roots</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>06</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Can the GC <span class="grad">reach it?</span></div>
+<p class="lead mt10" style="font-size:24px">Every collection starts from <span class="hl-o">GC Roots</span> and follows references. No path = garbage.</p>
+<div class="row gap24 mt24" style="height:470px">
+  <div class="grow"><div class="card " style=""><div class="cap">Reachability graph — the only question the GC asks</div><div style="padding-top:2px">
+<div class="col center" style="gap:0;padding:14px 0 6px 0">
+  <div style="display:flex;align-items:center;gap:14px">
+    <span class="node root" style="font-size:18px;padding:12px 26px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13.4 2.5L5 13.6h5.3L8.9 21.5 18 10.2h-5.3z"/></svg><span>GC ROOT</span></span>
+    <svg width="60" height="26" viewBox="0 0 54 26" fill="none" stroke="#F89820" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+    <span class="node cool" style="font-size:18px;padding:12px 26px"><span>Object A</span></span>
+    <svg width="60" height="26" viewBox="0 0 54 26" fill="none" stroke="#5AB0E0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg>
+    <span class="node cool" style="font-size:18px;padding:12px 26px"><span>Object B</span></span>
+  </div>
+  <div class="mono mt10" style="font-size:14px;color:#7BC46B">✓ path from a root → reachable → GC keeps both</div>
+  <div style="width:80%;border-top:2px dotted #22304A;margin:20px 0 16px 0"></div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <span class="node dead" style="font-size:18px;padding:12px 26px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg><span>Object C</span></span>
+    <span class="mono" style="font-size:14px;color:#E8453C">no path from any root</span>
+    <span class="mono" style="font-size:14px;color:#E8453C;background:rgba(232,69,60,.12);border:1px solid rgba(232,69,60,.5);border-radius:999px;padding:6px 16px">→ UNREACHABLE</span>
+  </div>
+  <div class="small mt10">The GC traces the graph — it never asks “will you use this again?”, only “can I reach it?”</div>
+</div>
+</div></div></div>
+  <div style="width:560px"><div class="card accent-p" style=""><div class="sheen p"></div><div class="cap">Common GC roots (you don't memorise internals)</div><div style=""><ul class="bul p"><li><b>Locals</b> in active stack frames</li><li><b>Static</b> fields of loaded classes</li><li><b>Active threads</b> themselves</li><li><b>JVM-internal</b> roots (JNI, …)</li></ul><div class="note mt18" style="font-size:16.5px">Still referenced, even once, means <b>it stays</b> — usefulness is irrelevant.</div></div></div></div>
+</div>
+<div class="mt18" style="width:1240px"><div class="joke purple"><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“Still referenced? Sorry, you're staying.”</span></div></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>07 — Mark · Sweep · Compact</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>07</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Mark. Sweep. <span class="grad">Compact.</span></div>
+<p class="lead mt10" style="font-size:24px">The classic 3-step model behind (almost) every collector — find the living, free the dead, tidy up.</p>
+<div class="row gap24 mt24" style="height:500px">
+  <div style="width:830px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">The cycle, every time</div><div style=""><div class="pstep on"><div class="n">1</div><div class="grow"><div class="h4"><span style="color:#FFD9A8">MARK</span> — find who is alive</div><div class="body mt6">Trace from <b>GC Roots</b> and tag every <b>reachable</b> object.</div></div></div><div style="height:14px"></div><div class="pstep"><div class="n">2</div><div class="grow"><div class="h4"><span style="color:#FFB0A8">SWEEP</span> — reclaim the rest</div><div class="body mt6">Free memory of <b>unreachable</b> objects. Nothing points to them.</div></div></div><div style="height:14px"></div><div class="pstep"><div class="n">3</div><div class="grow"><div class="h4"><span style="color:#BFE0FF">COMPACT</span> — defragment</div><div class="body mt6">Slide survivors together so free space is <b>one</b> clean block.</div></div></div></div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">What it looks like in memory</div><div style="">
+<div class="cap" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#97A5BD;margin-bottom:10px">HEAP BEFORE · G = garbage</div>
+<div class="blocks"><div class="blk live">A</div><div class="blk live">B</div><div class="blk g">G</div><div class="blk live">C</div><div class="blk g">G</div><div class="blk live">D</div></div>
+<div class="row mid mt14" style="gap:12px">
+  <span class="mono" style="font-size:14px;color:#F89820">mark ✓</span>
+  <span style="color:#97A5BD">→</span>
+  <span class="mono" style="font-size:14px;color:#E8453C">sweep</span>
+  <span style="color:#97A5BD">→</span>
+  <span class="mono" style="font-size:14px;color:#5AB0E0">compact</span>
+</div>
+<div class="cap mt18" style="font-size:13px;font-weight:700;letter-spacing:.15em;color:#97A5BD;margin-bottom:10px">HEAP AFTER · survivors packed left, free space right</div>
+<div class="blocks"><div class="blk live">A</div><div class="blk live">B</div><div class="blk live">C</div><div class="blk live">D</div><div class="blk free"></div><div class="blk free"></div></div>
+<div class="note mt18" style="font-size:16px">Modern collectors are <b>more sophisticated</b> — but Mark-Sweep-Compact is the mental model everything builds on.</div>
+</div></div></div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>08 — Generational GC</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>08</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2" style="font-size:56px">Most objects <span class="grad">die young.</span></div>
+<p class="lead mt10" style="font-size:24px">So the Heap is split by age — clean the nursery often, disturb the elders rarely.</p>
+<div class="row gap24 mt24" style="height:470px">
+  <div style="width:720px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">Why generations exist</div><div style="">
+<ul class="bul "><li>New objects start in <b>Eden</b> (young generation).</li><li>A <b>minor GC</b> clears the young gen fast — most objects are already dead.</li><li>Survivors age in <b>S0 / S1</b>, then get <b>promoted</b> to Old.</li><li>The <b>Old generation</b> holds long-lived data, collected rarely.</li></ul>
+<div class="note mt18" style="font-size:16.5px">
+  Collecting <b>500 MB of young garbage</b> beats scanning a <b>10 GB heap</b> every time.
+</div>
+</div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">Young (Eden + S0/S1) → promotion → Old</div><div style="padding-top:4px"><div style="display:flex;justify-content:center"><svg width="880" height="380" viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" ><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker><rect x="20" y="34" width="660" height="230" rx="16" fill="rgba(20,28,48,.6)" stroke="#24314B" stroke-width="1.6"/><text x="40" y="24" fill="#60708A" font-size="13" font-weight="400" letter-spacing="2" font-family="Inter, sans-serif" text-anchor="start">HEAP</text><rect x="42" y="56" width="356" height="186" rx="13" fill="rgba(90,176,224,.07)" stroke="#5AB0E0" stroke-width="1.6" stroke-opacity=".65"/><text x="58" y="80" fill="#5AB0E0" font-size="14" font-weight="700" letter-spacing="1.6" font-family="Inter, sans-serif" text-anchor="start">YOUNG GENERATION</text><rect x="58" y="94" width="186" height="128" rx="11" fill="rgba(90,176,224,.16)" stroke="#5AB0E0" stroke-width="1.5"/><text x="151" y="152" fill="#BFE0FF" font-size="20" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">Eden</text><text x="151" y="176" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">new objects</text><rect x="262" y="94" width="62" height="128" rx="11" fill="rgba(123,196,107,.14)" stroke="#7BC46B" stroke-width="1.5"/><text x="293" y="152" fill="#C6E9BE" font-size="17" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">S0</text><text x="293" y="176" fill="#60708A" font-size="11.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">survivors</text><rect x="336" y="94" width="62" height="128" rx="11" fill="rgba(123,196,107,.14)" stroke="#7BC46B" stroke-width="1.5"/><text x="367" y="152" fill="#C6E9BE" font-size="17" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">S1</text><text x="367" y="176" fill="#60708A" font-size="11.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">survivors</text><rect x="420" y="56" width="240" height="186" rx="13" fill="rgba(167,139,250,.08)" stroke="#A78BFA" stroke-width="1.6" stroke-opacity=".65"/><text x="436" y="80" fill="#A78BFA" font-size="14" font-weight="700" letter-spacing="1.6" font-family="Inter, sans-serif" text-anchor="start">OLD GENERATION</text><rect x="436" y="94" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><rect x="436" y="140" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><rect x="436" y="186" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><text x="444" y="118" fill="#DCD0FF" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">long-lived objects</text><text x="444" y="164" fill="#DCD0FF" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">still reachable</text><text x="444" y="210" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">collected rarely</text><path d="M400 152 C 410 152, 412 152, 418 152" fill="none" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><text x="352" y="300" fill="#F89820" font-size="14" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">promotion after surviving several collections</text><path d="M240 236 C 300 296, 360 300, 412 300" fill="none" stroke="#F89820" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ah-F89820)"/><text x="20" y="372" fill="#60708A" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">most objects die young — that is why the split exists</text></svg></div></div></div></div>
+</div>
+<div class="mt18" style="width:1240px"><div class="joke blue"><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“Most Java objects have a very short career.”</span></div></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>09 — Collector zoo</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>09</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Pick your <span class="grad">collector.</span></div>
+<p class="lead mt10" style="font-size:24px">Same job — find garbage. Different trade-offs between <span class="hl-o">throughput</span> and <span class="hl-c">pause time</span>.</p>
+<div class="row gap18 mt24" style="height:470px">
+  <div class="grow"><div class="card " style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#97A5BD22;border:1px solid #97A5BD66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#97A5BD" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12h8"/></svg></span><div class="h4">Serial GC</div></div><ul class="bul sm"><li>Simple · <b>single-threaded</b></li><li>Small apps · tiny heaps</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-o" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#F8982022;border:1px solid #F8982066;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="6.5" width="11" height="11" rx="2.5"/><rect x="10.5" y="2.5" width="11" height="11" rx="2.5"/></svg></span><div class="h4">Parallel GC</div></div><ul class="bul sm"><li><b>Multi-threaded</b> stop-the-world</li><li>Max <b>throughput</b> batch jobs</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-g" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#7BC46B22;border:1px solid #7BC46B66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg></span><div class="h4">G1 GC ★</div></div><ul class="bul sm"><li><b>Region-based</b>, default JDK 9+</li><li>Balances latency + throughput</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-c" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#5AB0E022;border:1px solid #5AB0E066;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13.4 2.5L5 13.6h5.3L8.9 21.5 18 10.2h-5.3z"/></svg></span><div class="h4">ZGC</div></div><ul class="bul sm"><li><b>Sub-millisecond</b> pauses</li><li>Huge heaps · concurrent</li></ul></div></div></div>
+  <div class="grow"><div class="card accent-p" style=""><div style="padding-top:2px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="display:inline-flex;width:46px;height:46px;border-radius:13px;background:#A78BFA22;border:1px solid #A78BFA66;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.5 19.5C4.5 11 10 5 20 5c0 10-5.6 15-15.5 14.5z"/><path d="M9 15c1.7-3 4-5 7.5-6.4"/></svg></span><div class="h4">Shenandoah</div></div><ul class="bul sm"><li><b>Low-pause</b>, concurrent</li><li>Responsive services</li></ul></div></div></div>
+</div>
+<div class="note mt18" style="font-size:17px;text-align:center">Rule of thumb: default to <b>G1</b> — reach for <b>ZGC / Shenandoah</b> only when pauses hurt. ★ = the one we zoom into next.</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>10 — G1 spotlight</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>10</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">G1 cleans the <span class="grad">dirtiest first.</span></div>
+<p class="lead mt10" style="font-size:24px"><b style="color:#EAEFF8">Garbage-First GC</b> — the default since JDK 9. Regions, not generations-in-concrete.</p>
+<div class="row gap24 mt24" style="height:440px">
+  <div style="width:720px"><div class="card accent-g" style=""><div class="sheen g"></div><div class="cap">G1 in 20 seconds</div><div style="">
+<ul class="bul "><li><b>G1 = Garbage-First.</b> Heap split into equal <b>regions</b>.</li><li>A region can be <b>Eden</b>, <b>Survivor</b>, <b>Old</b> or <b>Humongous</b>.</li><li>G1 collects the regions with the <b>most garbage first</b>.</li><li>Goal: big reclamation within a <b>pause-time target</b>.</li></ul>
+<div class="row gap14 mt18">
+  <span class="chip c">E · Eden</span><span class="chip g">S · Survivor</span>
+  <span class="chip p">O · Old</span><span class="chip r">H · Humongous</span>
+</div>
+</div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">Heap = regions · ★ collected first</div><div style="padding-top:4px"><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px"><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(90,176,224,.16);border-color:rgba(90,176,224,.45);color:#BFE0FF;"><span>E</span><span class="rl">eden</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(167,139,250,.16);border-color:rgba(167,139,250,.45);color:#DCD0FF;"><span>O</span><span class="rl">old</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(90,176,224,.16);border-color:rgba(90,176,224,.45);color:#BFE0FF;"><span>E</span><span class="rl">eden</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(123,196,107,.16);border-color:rgba(123,196,107,.45);color:#C6E9BE;"><span>S</span><span class="rl">survivor</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(167,139,250,.16);border-color:rgba(167,139,250,.45);color:#DCD0FF;"><span>O</span><span class="rl">old</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(90,176,224,.16);border-color:rgba(90,176,224,.45);color:#BFE0FF;box-shadow:0 0 0 3px rgba(248,152,32,.55)"><span>E</span><span class="rl">eden ★</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(232,69,60,.2);border-color:rgba(232,69,60,.6);color:#FFB0A8;"><span>H</span><span class="rl">humongous</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(90,176,224,.16);border-color:rgba(90,176,224,.45);color:#BFE0FF;"><span>E</span><span class="rl">eden</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(123,196,107,.16);border-color:rgba(123,196,107,.45);color:#C6E9BE;"><span>S</span><span class="rl">survivor</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(167,139,250,.16);border-color:rgba(167,139,250,.45);color:#DCD0FF;"><span>O</span><span class="rl">old</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(90,176,224,.16);border-color:rgba(90,176,224,.45);color:#BFE0FF;"><span>E</span><span class="rl">eden</span></div><div style="height:78px;border-radius:9px;border:1px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:FiraCode,monospace;font-size:18px;font-weight:700;background:rgba(83,130,161,.07);border-color:rgba(83,130,161,.26);color:#46587A;"><span></span><span class="rl">free</span></div></div><div class="mono mt14" style="font-size:14.5px;color:#F89820;text-align:center">★ = next collection target — most garbage per millisecond of pause</div></div></div></div>
+</div>
+<div class="mt18" style="width:1240px"><div class="joke "><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“Garbage First: finally, a collector that knows what to clean first.”</span></div></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>11 — System.gc()</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>11</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2"><code>System.gc()</code> is a <span class="grad">request.</span></div>
+<p class="lead mt10" style="font-size:24px">It <span class="hl-o">suggests</span> a collection — the JVM may obey, delay, or ignore it entirely.</p>
+<div class="row gap24 mt24" style="height:430px">
+  <div style="width:660px" class="col gap18">
+    <div class="editor big" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Demo.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cst">public</span> <span class="t-cst">class</span> <span class="t-cls">Demo</span> {</span></div><div class="crow"><span class="ln">2</span><span class="src">    <span class="t-cst">public</span> <span class="t-cst">static</span> <span class="t-cst">void</span> <span class="t-mtd">main</span>(<span class="t-cls">String</span>[] <span class="t-var">args</span>) {</span></div><div class="crow hl"><span class="ln">3</span><span class="src">        <span class="t-cls">System</span>.<span class="t-mtd">gc</span>();  <span class="t-cmt">// hint, not a command</span></span></div><div class="crow"><span class="ln">4</span><span class="src">    }</span></div><div class="crow"><span class="ln">5</span><span class="src">}</span></div></div>
+</div>
+    <div class="warn" style="font-size:18px;text-align:center">❌ Myth: <b>“System.gc() forces GC.”</b></div>
+    <div class="ok" style="font-size:18px;text-align:center">✅ Reality: <b>it only hints the JVM to consider GC.</b></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">What really happens when you call it</div><div style="padding-top:2px">
+<div class="col center" style="gap:0;padding:10px 0 4px 0">
+  <span class="node" style="font-size:17px;padding:11px 26px"><span>Application calls</span>&nbsp;<span class="mono" style="color:#5AB0E0">System.gc()</span></span>
+  <div style="height:22px;display:flex;align-items:center;color:#97A5BD">
+    <svg width="26" height="22" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <span class="node root" style="font-size:17px;padding:11px 26px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8.4 9.2h7.2v5.6H8.4z"/></svg><span>JVM decides</span></span>
+  <div style="display:flex;gap:26px;margin-top:14px;width:100%;justify-content:center">
+    <div style="flex:1;text-align:center">
+      <div style="color:#7BC46B">╭──→</div>
+      <span class="mono" style="font-size:16px;background:rgba(123,196,107,.12);border:1px solid rgba(123,196,107,.5);border-radius:10px;padding:9px 18px;color:#C9E8C1">perform GC</span>
+      <div class="small mt6">if it makes sense</div>
+    </div>
+    <div style="flex:1;text-align:center">
+      <div style="color:#97A5BD">──╮</div>
+      <span class="mono" style="font-size:16px;background:rgba(83,130,161,.08);border:1px solid #2C3E5C;border-radius:10px;padding:9px 18px;color:#97A5BD">do something else</span>
+      <div class="small mt6">ignore · delay · partial</div>
+    </div>
+  </div>
+</div>
+</div></div></div>
+</div>
+<div class="mt18" style="text-align:center"><span class="mono" style="font-size:17px;color:#E8453C;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.5);border-radius:999px;padding:9px 26px">does NOT guarantee anything — never rely on it for correctness</span></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>12 — Object lifecycle</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>12</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">Birth → life → <span class="grad">recycling.</span></div>
+<p class="lead mt10" style="font-size:24px">Every Java object walks the same 6-step path — the GC owns the last two steps.</p>
+<div class="mt24"><div class="card " style=""><div class="cap">The whole story of an object, left to right</div><div style="padding-top:6px"><div class="flow"><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12h8"/></svg></div><div class="t">Created</div><div class="s"><span class='mono'>new User()</span></div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="12" r="2.8"/><path d="M8.8 12h6.4"/></svg></div><div class="t">Reachable</div><div class="s">live refs exist</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M1.8 12S5.4 5.8 12 5.8 22.2 12 22.2 12 18.6 18.2 12 18.2 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.1"/></svg></div><div class="t">Used</div><div class="s">read · write · call</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M6.2 6.2l11.6 11.6M17.8 6.2L6.2 17.8"/></svg></div><div class="t">Unreachable</div><div class="s">refs dropped</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step hot" style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg></div><div class="t">Eligible</div><div class="s">GC may take it</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step cool" style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.5 12.6l4.8 4.8L19.5 6.6"/></svg></div><div class="t">Reclaimed</div><div class="s">memory reusable</div></div></div></div></div></div>
+<div class="row gap24 mt24" style="height:330px">
+  <div style="width:760px"><div class="editor " style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Lifecycle.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cls">User</span> <span class="t-var">user</span> = <span class="t-kw">new</span> <span class="t-cls">User</span>(<span class="t-str">&quot;Oussama&quot;</span>);</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow hl"><span class="ln">3</span><span class="src"><span class="t-var">user</span> = <span class="t-kw">null</span>;  <span class="t-cmt">// unreachable → eligible</span></span></div></div>
+</div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">Map the code to the flow</div><div style="padding-top:2px"><div class="mono" style="font-size:17px;line-height:2;color:#C8D4E6"><span style="color:#5AB0E0">new User()</span> ──→ <span style="color:#7BC46B">Reachable + Used</span><br><span style="color:#C792EA">user = null</span> ──→ <span style="color:#E8453C">Unreachable → Eligible</span><br><span style="color:#F89820">GC runs</span> ──→ <span style="color:#7BC46B">Reclaimed ✓</span></div><div class="note mt14" style="font-size:16px">Trace it: creation is <b>yours</b>, reclamation is the <b>GC’s</b>. You only control the middle — the references.</div></div></div></div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>13 — Memory leaks?!</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>13</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2" style="font-size:52px">Java has GC… <span class="grad">but leaks are real.</span></div>
+<p class="lead mt10" style="font-size:24px">The GC frees the <span class="hl-o">unreachable</span> — it cannot free what you still <span class="hl-r">hold onto</span>.</p>
+<div class="row gap24 mt24" style="height:400px">
+  <div style="width:780px" class="col gap18">
+    <div class="editor " style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Leak.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cst">static</span> <span class="t-cls">List</span>&lt;<span class="t-cst">byte</span>[]&gt; <span class="t-var">cache</span> = <span class="t-kw">new</span> <span class="t-cls">ArrayList</span>&lt;&gt;();</span></div><div class="crow"><span class="ln">2</span><span class="src"> </span></div><div class="crow"><span class="ln">3</span><span class="src"><span class="t-kw">while</span> (<span class="t-kw">true</span>) {</span></div><div class="crow hl"><span class="ln">4</span><span class="src">    <span class="t-var">cache</span>.<span class="t-mtd">add</span>(<span class="t-kw">new</span> <span class="t-cst">byte</span>[<span class="t-num">1024</span> * <span class="t-num">1024</span>]);  <span class="t-cmt">// 1 MB, forever reachable</span></span></div><div class="crow"><span class="ln">5</span><span class="src">}</span></div></div>
+</div>
+    <div class="joke "><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“Memory leak: when your program refuses to let go.”</span></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">One static list pinning megabytes forever</div><div style="padding-top:2px">
+<div class="col center" style="gap:0;padding:12px 0 4px 0">
+  <span class="mono" style="font-size:18px;background:rgba(232,69,60,.12);border:1px solid rgba(232,69,60,.5);border-radius:10px;padding:9px 24px;color:#FFB0A8">static cache</span>
+  <div style="height:20px;display:flex;align-items:center;color:#E8453C">
+    <svg width="26" height="20" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <div class="row gap10" style="justify-content:center">
+    <span class="mono" style="font-size:15px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.4);border-radius:9px;padding:8px 14px;color:#FF9C92">1 MB</span>
+    <span class="mono" style="font-size:15px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.4);border-radius:9px;padding:8px 14px;color:#FF9C92">1 MB</span>
+    <span class="mono" style="font-size:15px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.4);border-radius:9px;padding:8px 14px;color:#FF9C92">1 MB</span>
+    <span class="mono" style="font-size:15px;color:#97A5BD">…</span>
+  </div>
+  <div class="mono mt12" style="font-size:14.5px;color:#E8453C">useless, but reachable → GC must keep every one</div>
+</div>
+</div></div></div>
+</div>
+<div class="mt18"><div class="flow"><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg></div><div class="t">Unused objects</div><div class="s">dead logically</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg></div><div class="t">+ still referenced</div><div class="s">cache holds them</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M6.2 6.2l11.6 11.6M17.8 6.2L6.2 17.8"/></svg></div><div class="t">GC can't collect</div><div class="s">reachable = kept</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step hot" style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="7" width="19" height="10" rx="2.5"/><path d="M6.5 17v3M11 17v3M15.5 17v3M9 11h6"/></svg></div><div class="t">Heap grows</div><div class="s">until it bursts</div></div><span class="arrow" style="flex:0 0 54px;padding:0 6px"><svg width="42" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h46"/><path d="M38 5l10 8-10 8"/></svg></span><div class="step " style=""><div class="ico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.4l9 15.8H3z"/><path d="M12 9.6v4.4M12 16.6v.2"/></svg></div><div class="t">OutOfMemoryError</div><div class="s">JVM gives up</div></div></div></div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>14 — When memory runs out</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>14</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2">When memory <span class="grad">runs out.</span></div>
+<p class="lead mt10" style="font-size:24px">If reachable garbage grows faster than the GC can free it, the JVM fails fast: <span class="hl-r">OutOfMemoryError</span>.</p>
+<div class="row gap24 mt24" style="height:500px">
+  <div style="width:700px" class="col gap18">
+    <div class="editor " style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>DemoOOM.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-kw">for</span> (<span class="t-cst">int</span> <span class="t-var">i</span> = <span class="t-num">0</span>; <span class="t-var">i</span> &lt; <span class="t-num">1_000_000</span>; <span class="t-var">i</span>++) {</span></div><div class="crow hl"><span class="ln">2</span><span class="src">    <span class="t-cst">byte</span>[] <span class="t-var">data</span> = <span class="t-kw">new</span> <span class="t-cst">byte</span>[<span class="t-num">1024</span>];  <span class="t-cmt">// 1 KB per loop</span></span></div><div class="crow"><span class="ln">3</span><span class="src">}</span></div><div class="crow"><span class="ln">4</span><span class="src"> </span></div><div class="crow"><span class="ln">5</span><span class="src"><span class="t-cls">System</span>.<span class="t-mtd">gc</span>();  <span class="t-cmt">// still just a hint</span></span></div></div>
+</div>
+    <div class="term" style="">
+  <div class="tbar"><span class="lights"><i></i><i></i><i></i></span>kara@youcode — ~/gc-demo</div>
+  <div class="tbody"><div class="tl" style="font-size:16px"><span class="cm"># </span>limit the heap, then watch the GC</div><div class="tl" style="font-size:16px"><span class="pr">$ </span><span style="color:#9CDCFE">java</span> -Xms128m -Xmx256m App</div><div class="tl" style="font-size:16px">run with a 128 MB → 256 MB heap</div><div class="tl" style="font-size:16px"><span class="pr">$ </span><span style="color:#9CDCFE">java</span> -Xlog:gc App</div><div class="tl" style="font-size:16px">[0.023s][info][gc] GC(0) Pause Young … 12M→3M (48M)</div></div>
+</div>
+  </div>
+  <div class="grow col gap18">
+    <div class="card accent-r" style=""><div class="sheen r"></div><div class="cap">The error every Java dev meets once</div><div style="">
+<div class="mono" style="font-size:19px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.5);border-radius:10px;padding:12px 18px;color:#FF9C92">java.lang.OutOfMemoryError: Java heap space</div>
+<ul class="bul r sm"><li><b>Heap is finite</b> — <code>-Xmx</code> sets the ceiling.</li><li>GC can only free the <b>unreachable</b>.</li><li>Leaked / pinned objects pile up → <b>boom</b>.</li></ul>
+<div class="row gap14 mt14">
+  <span class="chip o">-Xms · start heap</span><span class="chip r">-Xmx · max heap</span><span class="chip c">-Xlog:gc · GC logs</span>
+</div>
+</div></div>
+    <div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">Your turn (60–90 seconds)</div><div style=""><div class="mono" style="font-size:17px;color:#FFD9A8">▶ LIVE DEMO — run it, shrink <span style="color:#FF7A59">-Xmx</span>, read <span style="color:#5AB0E0">-Xlog:gc</span>, watch pauses + heap.</div><div class="small mt6">Tip: start at <code>-Xmx256m</code>, then try <code>64m</code> and compare the GC log.</div></div></div>
+  </div>
+</div>
+</div></div>
+<div class="slide"><div class="vignette"></div>
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>15 — Key takeaways</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>15</b> / 15</span>
+</div><div class="stage" style="top:150px">
+<div class="h2 txtc">Key <span class="grad">takeaways.</span></div>
+<p class="lead mt10 txtc" style="font-size:24px">Nine cards — if you remember these, you understand Java memory.</p>
+<div class="col gap14 mt24">
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#5AB0E055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2l9 4.6-9 4.6-9-4.6z"/><path d="M3 12.6l9 4.6 9-4.6"/><path d="M3 16.9l9 4.6 9-4.6"/></svg><div class="h4" style="font-size:19px">Memory</div></div><div class="body" style="font-size:16.5px">Stack = calls · <b>Heap</b> = objects</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#F8982055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 2.6l8.5 4.7v9.4L12 21.4 3.5 16.7V7.3z"/><path d="M3.7 7.4L12 12l8.3-4.6M12 12v9.3"/></svg><div class="h4" style="font-size:19px">Objects</div></div><div class="body" style="font-size:16.5px">Allocated on the <b>Heap</b> via <b>new</b></div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#A78BFA55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="12" r="2.8"/><path d="M8.8 12h6.4"/></svg><div class="h4" style="font-size:19px">Reachability</div></div><div class="body" style="font-size:16.5px"><b>GC Roots →</b> reachable = kept</div></div></div>
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#E8453C55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4 7h16M9.5 7V4.8h5V7"/><path d="M6.5 7l1 12.2h9l1-12.2"/><path d="M10 11v5M14 11v5"/></svg><div class="h4" style="font-size:19px">Garbage</div></div><div class="body" style="font-size:16.5px"><b>Unreachable</b> = eligible, not deleted</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#7BC46B55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M14.5 3.5l6 6"/><path d="M16.8 5.8L9.4 13.2l-1.8-1.8z"/><path d="M7.6 11.4l5 5-1.6 3.4H6.6L4.2 18z"/></svg><div class="h4" style="font-size:19px">Collector</div></div><div class="body" style="font-size:16.5px"><b>Mark · Sweep · Compact</b> the Heap</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#5AB0E055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5AB0E0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M7 15.5v-4M11 15.5V8M15 15.5v-3M18.5 15.5V11"/></svg><div class="h4" style="font-size:19px">Generations</div></div><div class="body" style="font-size:16.5px"><b>Young</b> (Eden+S) → <b>Old</b> via promotion</div></div></div>
+  <div class="row gap14"><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#7BC46B55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7BC46B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"/><rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"/><rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"/></svg><div class="h4" style="font-size:19px">Collectors</div></div><div class="body" style="font-size:16.5px">Serial · Parallel · <b>G1 ★</b> · ZGC · Shenandoah</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#F8982055"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="2.5" y="4" width="19" height="16" rx="3"/><path d="M6.6 9.2l3 2.8-3 2.8M12.4 14.8h5"/></svg><div class="h4" style="font-size:19px">System.gc()</div></div><div class="body" style="font-size:16.5px">A <b>hint</b> — never a guarantee</div></div><div class="card tight" style="flex:1 1 0;min-width:0;border-color:#E8453C55"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8453C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg><div class="h4" style="font-size:19px">Leaks</div></div><div class="body" style="font-size:16.5px"><b>Retained refs</b> pin memory → OOM</div></div></div>
+</div>
+<div class="note mt18 txtc" style="font-size:19px"><b>Understanding memory helps Java developers write more efficient and reliable applications.</b></div>
+<div class="mt14 txtc" style="font-size:64px;font-weight:800;letter-spacing:-.02em">Questions<span style="color:#F89820">?</span></div>
+</div></div>
+</body></html>

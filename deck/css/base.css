@@ -1,0 +1,159 @@
+/* ============================================================
+   Java Memory Management & Garbage Collector — base design system
+   Dark software-engineering aesthetic • Java red/orange accents
+   Slide canvas: 1920 x 1080 (16:9)
+   ============================================================ */
+
+@font-face { font-family: 'Inter'; src: url('../fonts/Inter.ttf') format('truetype'); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: 'FiraCode'; src: url('../fonts/FiraCode-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'FiraCode'; src: url('../fonts/FiraCode-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+
+:root {
+  /* background layers */
+  --bg:        #070A12;
+  --bg2:       #0B1020;
+  --panel:     #101728;
+  --panel2:    #141C30;
+  --line:      #22304A;
+  --line-soft: #1B2337;
+
+  /* text */
+  --text: #EAEFF8;
+  --dim:  #97A5BD;
+  --mute: #60708A;
+
+  /* Java-inspired accents */
+  --orange: #F89820;
+  --red:    #E8453C;
+  --coral:  #FF7A59;
+  --blue:   #5382A1;
+  --cyan:   #5AB0E0;
+  --purple: #A78BFA;
+  --green:  #7BC46B;
+
+  /* code editor (VS Code Dark+ inspired) */
+  --ed-bg:   #0D1117;
+  --ed-bar:  #11182A;
+  --ed-line: #202A3D;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #05070C; }
+
+.slide {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* faint engineering grid */
+.slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(83,130,161,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(83,130,161,.055) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.vignette {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(1250px 720px at 10% -8%, rgba(248,152,32,.14), transparent 62%),
+    radial-gradient(950px 620px at 102% 108%, rgba(232,69,60,.11), transparent 62%),
+    radial-gradient(760px 520px at 88% 4%, rgba(167,139,250,.09), transparent 60%),
+    radial-gradient(1000px 800px at 50% 120%, rgba(0,0,0,.55), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- top / bottom chrome ---------- */
+.topline {
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--orange), var(--coral) 42%, var(--red) 66%, var(--blue) 100%);
+}
+.header {
+  position: absolute; top: 46px; left: 88px; right: 88px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kicker {
+  display: flex; align-items: center; gap: 15px;
+  font-size: 19px; font-weight: 700; letter-spacing: .17em;
+  text-transform: uppercase; color: var(--orange);
+}
+.kicker .bar { width: 4px; height: 23px; border-radius: 2px; background: var(--orange); }
+.kicker.g { color: var(--green); } .kicker.g .bar { background: var(--green); }
+.kicker.p { color: var(--purple); } .kicker.p .bar { background: var(--purple); }
+.kicker.b { color: var(--cyan); } .kicker.b .bar { background: var(--blue); }
+
+.topic {
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'FiraCode', monospace; font-size: 15px; color: var(--dim);
+  border: 1px solid var(--line); background: rgba(16,23,40,.75);
+  border-radius: 999px; padding: 9px 18px;
+}
+.topic .dotj {
+  width: 21px; height: 21px; border-radius: 6px;
+  background: linear-gradient(140deg, var(--orange), var(--red));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #1B1206;
+}
+
+.footer {
+  position: absolute; left: 88px; right: 88px; bottom: 30px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; border-top: 1px solid var(--line-soft);
+  font-size: 15px; color: var(--mute);
+}
+.footer .pageno { font-family: 'FiraCode', monospace; color: var(--dim); font-size: 15px; }
+.footer .pageno b { color: var(--orange); font-weight: 700; }
+
+.stage { position: absolute; left: 88px; top: 158px; width: 1744px; }
+
+/* ---------- typography ---------- */
+.h1 { font-size: 104px; line-height: 1.0; font-weight: 800; letter-spacing: -.028em; margin: 0; }
+.h2 { font-size: 58px; line-height: 1.06; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.h3 { font-size: 31px; line-height: 1.2; font-weight: 700; margin: 0; }
+.h4 { font-size: 23px; line-height: 1.25; font-weight: 700; margin: 0; }
+.lead { font-size: 27px; line-height: 1.5; color: var(--dim); margin: 0; font-weight: 400; }
+.body { font-size: 21px; line-height: 1.55; color: var(--dim); margin: 0; }
+.small { font-size: 17px; line-height: 1.5; color: var(--mute); margin: 0; }
+.mono { font-family: 'FiraCode', monospace; }
+.grad {
+  background: linear-gradient(93deg, #FFC46B 0%, var(--orange) 34%, var(--coral) 62%, var(--red) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.grad-blue { background: linear-gradient(93deg, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+b, strong { font-weight: 700; }
+.hl-o { color: var(--orange); }
+.hl-r { color: var(--coral); }
+.hl-c { color: var(--cyan); }
+.hl-p { color: var(--purple); }
+.hl-g { color: var(--green); }
+.hl-w { color: #FFFFFF; font-weight: 700; }
+.hl-b { color: #BFE0FF; }
+
+/* inline code chip */
+code {
+  font-family: 'FiraCode', monospace; font-size: .92em;
+  background: rgba(83,130,161,.15); border: 1px solid rgba(83,130,161,.32);
+  border-radius: 6px; padding: 1px 8px; color: #BFE0FF;
+}
+
+/* layout helpers */
+.row { display: flex; }
+.col { display: flex; flex-direction: column; }
+.gap10 { gap: 10px; } .gap14 { gap: 14px; } .gap18 { gap: 18px; }
+.gap24 { gap: 24px; } .gap32 { gap: 32px; } .gap44 { gap: 44px; }
+.grow { flex: 1 1 auto; min-width: 0; }
+.mid { align-items: center; } .top { align-items: flex-start; }
+.between { justify-content: space-between; }
+.center { align-items: center; justify-content: center; }
+.txtc { text-align: center; }
+.mt6 { margin-top: 6px; } .mt10 { margin-top: 10px; } .mt14 { margin-top: 14px; }
+.mt18 { margin-top: 18px; } .mt24 { margin-top: 24px; } .mt32 { margin-top: 32px; }
+.mt44 { margin-top: 44px; } .mt56 { margin-top: 56px; }

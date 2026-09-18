@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>08 — 08 — Generational GC</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>08 — Generational GC</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>08</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2" style="font-size:56px">Most objects <span class="grad">die young.</span></div>
+<p class="lead mt10" style="font-size:24px">So the Heap is split by age — clean the nursery often, disturb the elders rarely.</p>
+<div class="row gap24 mt24" style="height:470px">
+  <div style="width:720px"><div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">Why generations exist</div><div style="">
+<ul class="bul "><li>New objects start in <b>Eden</b> (young generation).</li><li>A <b>minor GC</b> clears the young gen fast — most objects are already dead.</li><li>Survivors age in <b>S0 / S1</b>, then get <b>promoted</b> to Old.</li><li>The <b>Old generation</b> holds long-lived data, collected rarely.</li></ul>
+<div class="note mt18" style="font-size:16.5px">
+  Collecting <b>500 MB of young garbage</b> beats scanning a <b>10 GB heap</b> every time.
+</div>
+</div></div></div>
+  <div class="grow"><div class="card " style=""><div class="cap">Young (Eden + S0/S1) → promotion → Old</div><div style="padding-top:4px"><div style="display:flex;justify-content:center"><svg width="880" height="380" viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" ><marker id="ah-F89820" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F89820"/></marker><marker id="ah-E8453C" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#E8453C"/></marker><marker id="ah-5AB0E0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5AB0E0"/></marker><marker id="ah-60708A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#60708A"/></marker><marker id="ah-7BC46B" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7BC46B"/></marker><marker id="ah-A78BFA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/></marker><rect x="20" y="34" width="660" height="230" rx="16" fill="rgba(20,28,48,.6)" stroke="#24314B" stroke-width="1.6"/><text x="40" y="24" fill="#60708A" font-size="13" font-weight="400" letter-spacing="2" font-family="Inter, sans-serif" text-anchor="start">HEAP</text><rect x="42" y="56" width="356" height="186" rx="13" fill="rgba(90,176,224,.07)" stroke="#5AB0E0" stroke-width="1.6" stroke-opacity=".65"/><text x="58" y="80" fill="#5AB0E0" font-size="14" font-weight="700" letter-spacing="1.6" font-family="Inter, sans-serif" text-anchor="start">YOUNG GENERATION</text><rect x="58" y="94" width="186" height="128" rx="11" fill="rgba(90,176,224,.16)" stroke="#5AB0E0" stroke-width="1.5"/><text x="151" y="152" fill="#BFE0FF" font-size="20" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">Eden</text><text x="151" y="176" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">new objects</text><rect x="262" y="94" width="62" height="128" rx="11" fill="rgba(123,196,107,.14)" stroke="#7BC46B" stroke-width="1.5"/><text x="293" y="152" fill="#C6E9BE" font-size="17" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">S0</text><text x="293" y="176" fill="#60708A" font-size="11.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">survivors</text><rect x="336" y="94" width="62" height="128" rx="11" fill="rgba(123,196,107,.14)" stroke="#7BC46B" stroke-width="1.5"/><text x="367" y="152" fill="#C6E9BE" font-size="17" font-weight="400" font-family="FiraCode, monospace" text-anchor="middle">S1</text><text x="367" y="176" fill="#60708A" font-size="11.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="middle">survivors</text><rect x="420" y="56" width="240" height="186" rx="13" fill="rgba(167,139,250,.08)" stroke="#A78BFA" stroke-width="1.6" stroke-opacity=".65"/><text x="436" y="80" fill="#A78BFA" font-size="14" font-weight="700" letter-spacing="1.6" font-family="Inter, sans-serif" text-anchor="start">OLD GENERATION</text><rect x="436" y="94" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><rect x="436" y="140" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><rect x="436" y="186" width="208" height="36" rx="9" fill="#A78BFA" fill-opacity=".16" stroke="#A78BFA" stroke-width="1.2" stroke-opacity=".5"/><text x="444" y="118" fill="#DCD0FF" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">long-lived objects</text><text x="444" y="164" fill="#DCD0FF" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">still reachable</text><text x="444" y="210" fill="#60708A" font-size="12.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">collected rarely</text><path d="M400 152 C 410 152, 412 152, 418 152" fill="none" stroke="#F89820" stroke-width="2.2" marker-end="url(#ah-F89820)"/><text x="352" y="300" fill="#F89820" font-size="14" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">promotion after surviving several collections</text><path d="M240 236 C 300 296, 360 300, 412 300" fill="none" stroke="#F89820" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ah-F89820)"/><text x="20" y="372" fill="#60708A" font-size="13.5" font-weight="400" font-family="Inter, sans-serif" text-anchor="start">most objects die young — that is why the split exists</text></svg></div></div></div></div>
+</div>
+<div class="mt18" style="width:1240px"><div class="joke blue"><span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M13 2.5c2.6 3.6 5.6 5.9 5.6 9.5a6.6 6.6 0 01-13.2 0c0-1.7.7-3 1.8-4.4"/><path d="M12 20.4c-1.9 0-3.2-1.3-3.2-3 0-1.9 1.7-2.6 2.4-4.4 1 1.5 4 2.7 4 4.9 0 1.5-1.3 2.5-3.2 2.5z"/></svg></span><span class="jt" style="font-size:18px">“Most Java objects have a very short career.”</span></div></div>
+</div>
+</div>
+</body></html>

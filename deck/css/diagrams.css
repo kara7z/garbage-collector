@@ -1,0 +1,85 @@
+/* ============================================================
+   diagrams.css — flows, heap blocks, G1 regions, decorations
+   ============================================================ */
+
+/* arrows */
+.arrow { display: flex; align-items: center; justify-content: center; color: var(--orange); }
+.arrow svg { display: block; }
+.arrow.c { color: var(--cyan); } .arrow.p { color: var(--purple); }
+.arrow.g { color: var(--green); } .arrow.d { color: var(--mute); }
+.hline { height: 2px; background: var(--line); border-radius: 2px; }
+.hline.grad { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+/* horizontal process flow */
+.flow { display: flex; align-items: stretch; }
+.step {
+  flex: 1 1 0; min-width: 0; text-align: center; padding: 18px 12px;
+  background: linear-gradient(165deg, rgba(20,28,48,.95), rgba(12,17,30,.95));
+  border: 1px solid var(--line); border-radius: 16px;
+}
+.step .ico { display: flex; justify-content: center; margin-bottom: 9px; }
+.step .t { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.25; }
+.step .s { font-size: 13px; color: var(--mute); margin-top: 5px; line-height: 1.35; }
+.step.hot { border-color: rgba(248,152,32,.6); background: linear-gradient(165deg, rgba(248,152,32,.16), rgba(20,28,48,.95)); }
+.step.cool { border-color: rgba(90,176,224,.5); background: linear-gradient(165deg, rgba(90,176,224,.14), rgba(20,28,48,.95)); }
+
+/* numbered process step (mark / sweep / compact) */
+.pstep { display: flex; gap: 18px; align-items: flex-start; }
+.pstep .n {
+  flex: 0 0 58px; width: 58px; height: 58px; border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 24px;
+  background: rgba(248,152,32,.13); border: 1px solid rgba(248,152,32,.5); color: var(--orange);
+}
+.pstep.on .n { background: linear-gradient(140deg, var(--orange), var(--red)); color: #150E05; border-color: transparent; }
+
+/* heap blocks */
+.blocks { display: flex; gap: 7px; }
+.blk {
+  width: 60px; height: 60px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'FiraCode', monospace; font-size: 20px; font-weight: 700;
+  border: 1px solid var(--line); background: rgba(20,28,48,.95); color: var(--text);
+}
+.blk.sm { width: 46px; height: 46px; font-size: 17px; }
+.blk.g { background: rgba(232,69,60,.16); border-color: rgba(232,69,60,.5); color: #FF9C92; }
+.blk.live { background: rgba(123,196,107,.14); border-color: rgba(123,196,107,.45); color: #BDE7B4; }
+.blk.free { background: rgba(83,130,161,.07); border-color: rgba(83,130,161,.26); color: #46587A; }
+.blk.marked { background: rgba(248,152,32,.2); border-color: rgba(248,152,32,.65); color: #FFD9A8; }
+.blk.ghost { border-style: dashed; opacity: .72; }
+
+/* G1 region map */
+.region {
+  height: 74px; border-radius: 9px; border: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'FiraCode', monospace; font-size: 18px; font-weight: 700; color: var(--text);
+}
+.region .rl { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.6); letter-spacing: .06em; }
+.region.E { background: rgba(90,176,224,.16); border-color: rgba(90,176,224,.45); color: #BFE0FF; }
+.region.O { background: rgba(167,139,250,.16); border-color: rgba(167,139,250,.45); color: #DCD0FF; }
+.region.S { background: rgba(123,196,107,.16); border-color: rgba(123,196,107,.45); color: #C6E9BE; }
+.region.H { background: rgba(232,69,60,.2); border-color: rgba(232,69,60,.6); color: #FFB0A8; }
+.region.ring { box-shadow: 0 0 0 3px rgba(248,152,32,.5); }
+
+/* memory graph nodes (reachability) */
+.node {
+  border-radius: 14px; border: 1px solid var(--line);
+  background: linear-gradient(160deg, rgba(20,28,48,.95), rgba(12,17,30,.95));
+  padding: 14px 20px; font-family: 'FiraCode', monospace; font-size: 18px; color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.node.root { border-color: rgba(248,152,32,.65); background: linear-gradient(160deg, rgba(248,152,32,.18), rgba(20,28,48,.95)); color: #FFD9A8; }
+.node.dead { border-color: rgba(232,69,60,.55); border-style: dashed; color: #FFB0A8; background: rgba(232,69,60,.08); }
+.node.cool { border-color: rgba(90,176,224,.5); color: #BFE0FF; }
+
+/* misc */
+.dotline { border-top: 2px dotted var(--line); height: 0; }
+.glow-o { box-shadow: 0 0 46px rgba(248,152,32,.22); }
+.strike { position: relative; color: #7C8798 !important; }
+.strike::after {
+  content: ''; position: absolute; left: -4px; right: -4px; top: 52%; height: 2px;
+  background: var(--red); transform: rotate(-3deg);
+}
+.stat { display: flex; flex-direction: column; }
+.stat .v { font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.stat .l { font-size: 15px; color: var(--mute); margin-top: 6px; letter-spacing: .05em; text-transform: uppercase; }

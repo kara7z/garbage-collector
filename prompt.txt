@@ -1,0 +1,29 @@
+CANVA PROMPT — Java Memory Management & Garbage Collector (paste into Canva Magic Design / Magic Slides)
+
+STYLE:
+Dark grunge presentation, 16:9, 18 slides, minimalist. Background #222831 (near-black blue-grey), content cards #31363F, accents and titles highlights #76ABAE (muted teal), body text #EEEEEE (off-white). Grunge texture: subtle grain, distressed edges, thin teal top rule on every slide, small page number tag bottom-right. Title font: Bebas Neue (or Oswald / Anton), bold condensed uppercase. Body font: Inter. Code font: monospace. Max 3 short bullets per slide, keywords only, big numbers, visual-first.
+
+TITLE SLIDE:
+"JAVA MEMORY & GARBAGE COLLECTOR", subtitle "How Java cleans up after you — heap, generations, collectors, live demo", badge "KARA OUSSAMA", meta "15 min • Beginner • Java 17 + G1". Right-side photo: macro circuit board / chip, dark, teal left border.
+
+SLIDES:
+1. Title (above).
+2. Roadmap: 5 numbered cards — 01 The Problem / 02 Memory / 03 How GC Works / 04 Collectors / 05 Live Demo.
+3. Manual vs Automatic: left card "C/C++ MANUAL: malloc/free, leaks, crashes", right highlighted card "JAVA AUTOMATIC: just new, GC frees garbage". Small trash-bin photo.
+4. JVM memory: 3 cards — STACK (primitives+refs, per thread) / HEAP highlighted (all objects, GC-managed, Eden→Old) / METASPACE (class metadata).
+5. Stack vs Heap: two columns + tiny code block "int x = 5; // stack" / "User u = new User(); // heap" / "u = null; // garbage".
+6. Metaspace in 20 sec: 3 bullets, dark code-screen photo on right.
+7. What is garbage: 3 cards — GC ROOTS (stack, statics, JNI) / REACHABLE=LIVE highlighted / ELSE=GARBAGE.
+8. Algorithm 1 Mark-and-Sweep: two cards MARK (walk from roots, stop-the-world) + SWEEP (free dead, leaves fragmentation), plus block diagram line.
+9. Compact + Copy: MARK-COMPACT (defrag) + COPYING Eden→S0/S1 (for short-lived).
+10. Generational hypothesis "MOST OBJECTS DIE YOUNG": 4 flow boxes Eden → S0/S1 → Old Gen → Metaspace with arrows.
+11. Minor vs Major: MINOR GC highlighted (Eden full, frequent, ms) vs MAJOR/FULL (Old full, rare, slow).
+12. Collectors table: 5 mini-cards Serial (tiny apps) / Parallel (batch) / G1 highlighted-default / ZGC (<1ms) / Shenandoah (low pause). Footnote: CMS deprecated.
+13. Why G1 wins: 3 bullets (regions, predictable pauses -XX:MaxGCPauseMillis=200, balanced), chip photo right.
+14. Flags + Tools: code block "-Xms512m -Xmx2g / -XX:+UseG1GC / -Xlog:gc*" + card "VISUALVM: attach, Heap tab, Perform GC".
+15. Live demo code: loop creating 50k disposable objects + 500 kept per iteration, run command "java -Xlog:gc* GCDemo", card "watch: sawtooth heap, Eden→S→Old, pauses in ms".
+16. Demo results: GC log lines + VisualVM heap screenshot placeholder, dark background photo.
+17. Leaks + best practices: LEAKS (static growing List, listeners, caches) vs DO THIS (bounded collections/WeakHashMap, close(), Xms≈Xmx).
+18. Thank-you "THANK YOU. QUESTIONS?" + recap line + tiny sources line (Oracle JVM docs, JEP 376 ZGC, JEP 379 Shenandoah, Unsplash).
+
+IMAGES (search Canva Photos): circuit board macro, code on dark screen, colorful trash bins (GC metaphor), dark night mountains texture. Apply dark duotone / transparency so text stays readable. Keep every slide dark, high contrast, no text walls.

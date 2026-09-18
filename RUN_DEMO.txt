@@ -1,0 +1,22 @@
+GCDemo — run instructions (Java 17+ recommended, tested fallback on Java 8)
+
+1) Compile
+  javac GCDemo.java
+
+2) Java 17+ (classroom, G1 default)
+  java -Xms64m -Xmx256m -XX:+UseG1GC -Xlog:gc* GCDemo
+  # save log backup:
+  java -Xms64m -Xmx256m -XX:+UseG1GC -Xlog:gc*:file=gc-demo.log GCDemo
+
+3) Java 8 fallback (this machine has JDK 8)
+  java -Xms64m -Xmx256m -verbose:gc GCDemo
+  # verified: triggers [GC (Allocation Failure) ...] Minor GCs, see demo-output.txt
+
+4) VisualVM (live + fallback)
+  - Start VisualVM:  visualvm  (or jvisualvm on JDK 8)
+  - Run GCDemo in another terminal, attach to process in VisualVM
+  - Tabs: Monitor (Heap sawtooth) + Visual GC (Eden/S/Old)
+  - Button: "Perform GC" -> heap graph drops = proof
+  - Fallback if live fails: show slide 16 (log excerpt) + demo-output.txt
+
+5) Expected: sawtooth heap, Eden->Survivor->Old promotion, pauses of a few ms.

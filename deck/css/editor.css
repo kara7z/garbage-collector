@@ -1,0 +1,86 @@
+/* ============================================================
+   editor.css — IDE code window, terminal, Java syntax colours
+   ============================================================ */
+
+.editor {
+  position: relative;
+  background: var(--ed-bg);
+  border: 1px solid #26314A;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 26px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.02) inset;
+}
+.editor .titlebar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px; background: var(--ed-bar);
+  border-bottom: 1px solid var(--ed-line);
+}
+.editor .lights { display: flex; gap: 8px; }
+.editor .lights i { width: 13px; height: 13px; border-radius: 50%; display: block; }
+.lights i:nth-child(1) { background: #FF5F57; }
+.lights i:nth-child(2) { background: #FEBC2E; }
+.lights i:nth-child(3) { background: #28C840; }
+.editor .tab {
+  display: flex; align-items: center; gap: 9px;
+  font-family: 'FiraCode', monospace; font-size: 15px; color: #A9B6CC;
+  background: rgba(255,255,255,.045); border: 1px solid var(--ed-line);
+  border-radius: 8px; padding: 7px 16px;
+}
+.editor .tab .jco {
+  font-size: 10px; font-weight: 800; color: #10131A;
+  background: linear-gradient(140deg, var(--orange), var(--red));
+  border-radius: 3px; padding: 1px 5px; letter-spacing: .04em;
+}
+.editor .lang {
+  margin-left: auto; display: flex; align-items: center; gap: 8px;
+  font-family: 'FiraCode', monospace; font-size: 13px; color: var(--mute);
+  border: 1px solid var(--ed-line); border-radius: 999px; padding: 4px 12px;
+}
+.editor .lang .jdot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+.editor .code { padding: 14px 0 16px 0; }
+
+.crow { display: flex; align-items: flex-start; }
+.crow .ln {
+  width: 64px; flex: 0 0 64px; text-align: right; padding-right: 20px;
+  font-family: 'FiraCode', monospace; font-size: 17px; line-height: 1.62;
+  color: #4A5A74; user-select: none;
+}
+.crow .src {
+  font-family: 'FiraCode', monospace; font-size: 17px; line-height: 1.62;
+  color: #D7E2F2; white-space: pre; padding-right: 30px;
+}
+.crow.hl { background: linear-gradient(90deg, rgba(248,152,32,.18), rgba(248,152,32,.02)); }
+.crow.hl .ln { color: var(--orange); font-weight: 700; }
+.crow.dim .src { opacity: .45; }
+.editor.big .crow .src, .editor.big .crow .ln { font-size: 20px; line-height: 1.66; }
+.editor.huge .crow .src, .editor.huge .crow .ln { font-size: 23px; line-height: 1.7; }
+.editor.mini .crow .src, .editor.mini .crow .ln { font-size: 15px; }
+
+/* Java syntax colours (VS Code Dark+ inspired) */
+.t-kw  { color: #C792EA; }              /* public, new, null, static, for      */
+.t-cls { color: #4EC9B0; }              /* class / type names                  */
+.t-cst { color: #569CD6; }              /* int, void, final, class (decls)     */
+.t-mtd { color: #DCDCAA; }              /* method names                        */
+.t-str { color: #CE9178; }              /* strings                             */
+.t-num { color: #B5CEA8; }              /* numbers                             */
+.t-cmt { color: #6A9955; font-style: italic; }
+.t-var { color: #9CDCFE; }              /* local variables / fields            */
+.t-op  { color: #D4D4D4; }
+.t-pl  { color: #EAEFF8; }
+
+/* ---------------- terminal ---------------- */
+.term {
+  background: #080B12; border: 1px solid #26314A; border-radius: 14px;
+  overflow: hidden; box-shadow: 0 26px 60px rgba(0,0,0,.5);
+}
+.term .tbar {
+  display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+  background: #0C1120; border-bottom: 1px solid var(--ed-line);
+  font-family: 'FiraCode', monospace; font-size: 14px; color: var(--mute);
+}
+.term .tbody { padding: 16px 20px 18px 20px; font-family: 'FiraCode', monospace; }
+.term .tl { font-size: 17px; line-height: 1.72; color: #C8D4E6; white-space: pre; }
+.term .tl .pr { color: var(--green); }
+.term .tl .cm { color: #5D6B85; }
+.term .tl .er { color: #FF6B5E; }
+.term .tl .ok { color: #9CDCFE; }

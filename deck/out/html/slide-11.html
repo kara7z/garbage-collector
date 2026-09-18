@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>11 — 11 — System.gc()</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>11 — System.gc()</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>11</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2"><code>System.gc()</code> is a <span class="grad">request.</span></div>
+<p class="lead mt10" style="font-size:24px">It <span class="hl-o">suggests</span> a collection — the JVM may obey, delay, or ignore it entirely.</p>
+<div class="row gap24 mt24" style="height:430px">
+  <div style="width:660px" class="col gap18">
+    <div class="editor big" style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>Demo.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-cst">public</span> <span class="t-cst">class</span> <span class="t-cls">Demo</span> {</span></div><div class="crow"><span class="ln">2</span><span class="src">    <span class="t-cst">public</span> <span class="t-cst">static</span> <span class="t-cst">void</span> <span class="t-mtd">main</span>(<span class="t-cls">String</span>[] <span class="t-var">args</span>) {</span></div><div class="crow hl"><span class="ln">3</span><span class="src">        <span class="t-cls">System</span>.<span class="t-mtd">gc</span>();  <span class="t-cmt">// hint, not a command</span></span></div><div class="crow"><span class="ln">4</span><span class="src">    }</span></div><div class="crow"><span class="ln">5</span><span class="src">}</span></div></div>
+</div>
+    <div class="warn" style="font-size:18px;text-align:center">❌ Myth: <b>“System.gc() forces GC.”</b></div>
+    <div class="ok" style="font-size:18px;text-align:center">✅ Reality: <b>it only hints the JVM to consider GC.</b></div>
+  </div>
+  <div class="grow"><div class="card " style=""><div class="cap">What really happens when you call it</div><div style="padding-top:2px">
+<div class="col center" style="gap:0;padding:10px 0 4px 0">
+  <span class="node" style="font-size:17px;padding:11px 26px"><span>Application calls</span>&nbsp;<span class="mono" style="color:#5AB0E0">System.gc()</span></span>
+  <div style="height:22px;display:flex;align-items:center;color:#97A5BD">
+    <svg width="26" height="22" viewBox="0 0 30 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2v18"/><path d="M7 14l8 8 8-8"/></svg>
+  </div>
+  <span class="node root" style="font-size:17px;padding:11px 26px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F89820" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8.4 9.2h7.2v5.6H8.4z"/></svg><span>JVM decides</span></span>
+  <div style="display:flex;gap:26px;margin-top:14px;width:100%;justify-content:center">
+    <div style="flex:1;text-align:center">
+      <div style="color:#7BC46B">╭──→</div>
+      <span class="mono" style="font-size:16px;background:rgba(123,196,107,.12);border:1px solid rgba(123,196,107,.5);border-radius:10px;padding:9px 18px;color:#C9E8C1">perform GC</span>
+      <div class="small mt6">if it makes sense</div>
+    </div>
+    <div style="flex:1;text-align:center">
+      <div style="color:#97A5BD">──╮</div>
+      <span class="mono" style="font-size:16px;background:rgba(83,130,161,.08);border:1px solid #2C3E5C;border-radius:10px;padding:9px 18px;color:#97A5BD">do something else</span>
+      <div class="small mt6">ignore · delay · partial</div>
+    </div>
+  </div>
+</div>
+</div></div></div>
+</div>
+<div class="mt18" style="text-align:center"><span class="mono" style="font-size:17px;color:#E8453C;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.5);border-radius:999px;padding:9px 26px">does NOT guarantee anything — never rely on it for correctness</span></div>
+</div>
+</div>
+</body></html>

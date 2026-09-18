@@ -1,0 +1,104 @@
+/* ============================================================
+   cards.css — panels, lists, chips, badges, callouts
+   ============================================================ */
+
+.card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(20,28,48,.96), rgba(13,18,32,.96));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 28px;
+}
+.card.tight { padding: 20px 22px; }
+.card.accent-o { border-color: rgba(248,152,32,.55); }
+.card.accent-r { border-color: rgba(232,69,60,.55); }
+.card.accent-c { border-color: rgba(90,176,224,.5); }
+.card.accent-p { border-color: rgba(167,139,250,.5); }
+.card.accent-g { border-color: rgba(123,196,107,.45); }
+.card .cap {
+  font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--mute); margin-bottom: 12px;
+}
+.sheen { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 18px 18px 0 0; opacity: .95; }
+.sheen.o { background: linear-gradient(90deg, var(--orange), var(--coral)); }
+.sheen.r { background: linear-gradient(90deg, var(--red), var(--coral)); }
+.sheen.c { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.sheen.p { background: linear-gradient(90deg, var(--purple), #CBB6FF); }
+.sheen.g { background: linear-gradient(90deg, #4E9A45, var(--green)); }
+
+/* ---------------- lists ---------------- */
+ul.bul { margin: 0; padding: 0; list-style: none; }
+ul.bul li {
+  position: relative; padding-left: 28px; margin: 0 0 11px 0;
+  font-size: 20px; line-height: 1.42; color: var(--dim);
+}
+ul.bul li:last-child { margin-bottom: 0; }
+ul.bul li::before {
+  content: ''; position: absolute; left: 4px; top: 10px;
+  width: 9px; height: 9px; border-radius: 3px;
+  background: var(--orange); transform: rotate(45deg);
+}
+ul.bul.c li::before { background: var(--cyan); }
+ul.bul.p li::before { background: var(--purple); }
+ul.bul.g li::before { background: var(--green); }
+ul.bul.r li::before { background: var(--red); }
+ul.bul li b { color: var(--text); font-weight: 600; }
+ul.bul.sm li { font-size: 18px; margin-bottom: 9px; padding-left: 24px; }
+ul.bul.sm li::before { width: 7px; height: 7px; top: 9px; }
+
+/* ---------------- jokes & callouts ---------------- */
+.joke {
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(120deg, rgba(248,152,32,.13), rgba(232,69,60,.05));
+  border: 1px solid rgba(248,152,32,.4);
+  border-left: 5px solid var(--orange);
+  border-radius: 12px; padding: 13px 22px;
+}
+.joke .jt { font-size: 18px; line-height: 1.4; color: #FFD9A8; font-style: italic; }
+.joke.blue {
+  background: linear-gradient(120deg, rgba(90,176,224,.13), rgba(167,139,250,.05));
+  border-color: rgba(90,176,224,.4); border-left-color: var(--cyan);
+}
+.joke.blue .jt { color: #BEDDF7; }
+.joke.purple {
+  background: linear-gradient(120deg, rgba(167,139,250,.14), rgba(90,176,224,.05));
+  border-color: rgba(167,139,250,.42); border-left-color: var(--purple);
+}
+.joke.purple .jt { color: #DCD0FF; }
+
+.note {
+  background: rgba(83,130,161,.1); border: 1px dashed rgba(83,130,161,.45);
+  border-radius: 12px; padding: 14px 20px; font-size: 17px; color: #A9C4DC; line-height: 1.45;
+}
+.note b { color: #D6E9FA; }
+.warn {
+  background: rgba(232,69,60,.1); border: 1px solid rgba(232,69,60,.45);
+  border-radius: 12px; padding: 16px 22px; font-size: 19px; color: #FFC0B9; line-height: 1.45;
+}
+.ok {
+  background: rgba(123,196,107,.1); border: 1px solid rgba(123,196,107,.42);
+  border-radius: 12px; padding: 16px 22px; font-size: 19px; color: #C9E8C1; line-height: 1.45;
+}
+
+/* ---------------- chips & badges ---------------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid var(--line); background: rgba(16,23,40,.9);
+  border-radius: 999px; padding: 8px 17px;
+  font-size: 16px; color: var(--dim); font-family: 'FiraCode', monospace;
+}
+.chip.o { border-color: rgba(248,152,32,.5); color: #FFD9A8; }
+.chip.c { border-color: rgba(90,176,224,.5); color: #BEDDF7; }
+.chip.p { border-color: rgba(167,139,250,.5); color: #DCD0FF; }
+.chip.r { border-color: rgba(232,69,60,.5); color: #FFBDB6; }
+.chip.g { border-color: rgba(123,196,107,.45); color: #C9E8C1; }
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 46px; height: 46px; padding: 0 12px; border-radius: 12px;
+  font-weight: 800; font-size: 21px;
+  background: linear-gradient(140deg, var(--orange), var(--red)); color: #150E05;
+}
+.badge.c { background: linear-gradient(140deg, var(--cyan), var(--blue)); color: #041420; }
+.badge.p { background: linear-gradient(140deg, #C4B5FD, var(--purple)); color: #150E28; }
+.badge.ghost { background: rgba(248,152,32,.14); border: 1px solid rgba(248,152,32,.5); color: var(--orange); }

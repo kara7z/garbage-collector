@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>14 — 14 — When memory runs out</title>
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/cards.css">
+<link rel="stylesheet" href="../../css/editor.css">
+<link rel="stylesheet" href="../../css/diagrams.css">
+<style>
+  html, body { margin:0; padding:0; background:#05070C; }
+  .slide { margin:0; }
+</style>
+</head><body>
+<div class="slide">
+  <div class="vignette"></div>
+  
+<div class="topline"></div>
+<div class="header">
+  <div class="kicker "><span class="bar"></span>14 — When memory runs out</div>
+  <div class="topic"><span class="dotj">J</span>Java Memory Management · Garbage Collector</div>
+</div>
+<div class="footer">
+  <span>Java Memory Management — Garbage Collector</span>
+  <span>YouCode · Java Track</span>
+  <span class="pageno"><b>14</b> / 15</span>
+</div>
+  <div class="stage" style="top:150px">
+<div class="h2">When memory <span class="grad">runs out.</span></div>
+<p class="lead mt10" style="font-size:24px">If reachable garbage grows faster than the GC can free it, the JVM fails fast: <span class="hl-r">OutOfMemoryError</span>.</p>
+<div class="row gap24 mt24" style="height:500px">
+  <div style="width:700px" class="col gap18">
+    <div class="editor " style="">
+  <div class="titlebar">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="tab"><span class="jco">J</span>DemoOOM.java</span>
+    <span class="lang"><span class="jdot"></span>Java</span>
+  </div>
+  <div class="code"><div class="crow"><span class="ln">1</span><span class="src"><span class="t-kw">for</span> (<span class="t-cst">int</span> <span class="t-var">i</span> = <span class="t-num">0</span>; <span class="t-var">i</span> &lt; <span class="t-num">1_000_000</span>; <span class="t-var">i</span>++) {</span></div><div class="crow hl"><span class="ln">2</span><span class="src">    <span class="t-cst">byte</span>[] <span class="t-var">data</span> = <span class="t-kw">new</span> <span class="t-cst">byte</span>[<span class="t-num">1024</span>];  <span class="t-cmt">// 1 KB per loop</span></span></div><div class="crow"><span class="ln">3</span><span class="src">}</span></div><div class="crow"><span class="ln">4</span><span class="src"> </span></div><div class="crow"><span class="ln">5</span><span class="src"><span class="t-cls">System</span>.<span class="t-mtd">gc</span>();  <span class="t-cmt">// still just a hint</span></span></div></div>
+</div>
+    <div class="term" style="">
+  <div class="tbar"><span class="lights"><i></i><i></i><i></i></span>kara@youcode — ~/gc-demo</div>
+  <div class="tbody"><div class="tl" style="font-size:16px"><span class="cm"># </span>limit the heap, then watch the GC</div><div class="tl" style="font-size:16px"><span class="pr">$ </span><span style="color:#9CDCFE">java</span> -Xms128m -Xmx256m App</div><div class="tl" style="font-size:16px">run with a 128 MB → 256 MB heap</div><div class="tl" style="font-size:16px"><span class="pr">$ </span><span style="color:#9CDCFE">java</span> -Xlog:gc App</div><div class="tl" style="font-size:16px">[0.023s][info][gc] GC(0) Pause Young … 12M→3M (48M)</div></div>
+</div>
+  </div>
+  <div class="grow col gap18">
+    <div class="card accent-r" style=""><div class="sheen r"></div><div class="cap">The error every Java dev meets once</div><div style="">
+<div class="mono" style="font-size:19px;background:rgba(232,69,60,.1);border:1px solid rgba(232,69,60,.5);border-radius:10px;padding:12px 18px;color:#FF9C92">java.lang.OutOfMemoryError: Java heap space</div>
+<ul class="bul r sm"><li><b>Heap is finite</b> — <code>-Xmx</code> sets the ceiling.</li><li>GC can only free the <b>unreachable</b>.</li><li>Leaked / pinned objects pile up → <b>boom</b>.</li></ul>
+<div class="row gap14 mt14">
+  <span class="chip o">-Xms · start heap</span><span class="chip r">-Xmx · max heap</span><span class="chip c">-Xlog:gc · GC logs</span>
+</div>
+</div></div>
+    <div class="card accent-o" style=""><div class="sheen o"></div><div class="cap">Your turn (60–90 seconds)</div><div style=""><div class="mono" style="font-size:17px;color:#FFD9A8">▶ LIVE DEMO — run it, shrink <span style="color:#FF7A59">-Xmx</span>, read <span style="color:#5AB0E0">-Xlog:gc</span>, watch pauses + heap.</div><div class="small mt6">Tip: start at <code>-Xmx256m</code>, then try <code>64m</code> and compare the GC log.</div></div></div>
+  </div>
+</div>
+</div>
+</div>
+</body></html>
